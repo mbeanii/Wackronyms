@@ -1,0 +1,103 @@
+Wackronyms App (wAPPronyms?)
+
+Main screen
+`- Create Match Button
+  `- Enter player name
+  `- Go to lobby
+`- Join Match Button
+  `- Enter join code
+  `- Enter player name (Black text)
+  `- Go to lobby
+`- Interface with keypad to enter responses and display/edit them on the screen
+  `- Browser does the keypad interface
+  `- We'll just need to be able to process the browser inputs (probably a javascript job)
+
+Lobby – join  code displayed at the top
+`- Min/max players
+  `- 3 - 8
+`- Player colors
+  `- Random color assigned at join
+  `- Make player-selectable is future development
+  `- Text is identifiable as being from this player when it is this color from here on
+`- Player name – editable at this stage?
+
+Gameplay
+X`- Pseudo-random letters / length selected and revealed
+X  `- Random selection weighted according to commonness of each letter.
+`- Prompts – players enter prompts while waiting in the lobby
+`- Interface with keyboard to enter responses and display/edit them on the screen
+  `- The web browser should handle this
+  `- We'll just need to be able to process the browser inputs (probably a javascript job)
+`- Submit button
+`- Bonus point for first submission
+`- Round timer
+`- Read each response one by one (random order)
+  `- Black text
+`- Display all responses at once for the vote
+  `- Black text
+  `- Prompt, “Tap your favorite response”
+  `- Highlight selection
+  `- Submit button
+`- Voting results screen
+  `- Starts with all responses as in the voting screen
+  `- “Votes” text above a number box in lower right-hand corner of each submission
+  `- Ones that didn’t receive votes are greyed out
+    `- Suportive encouragement message displayed
+  `- Number displayed in the votes boxes of the remaining submission start with 1 then increase one at a time before
+  settling at the respective number of votes received
+    `- Ding / tabulation sound effect as numbers increase
+  `- Submissions are sorted on the screen in descending order of votes received.
+  `- The submission with the top number of votes is celebrated by the game
+    `- Highlighted
+    `- Wavy lines drawn around it
+    `- Cheering sound effect
+  `- Winning submission’s author revealed
+    `- Labelled with their name
+    `- Text changes to their color
+  `- All folks who voted for this one are revealed
+    `- Each is given a point
+  `- Each submissions’ author is revealed
+`- Go to score screen
+  `- Show each player’s scores in each category for each round
+    `- First submission
+    `- Voted for most popular
+    `- Number of votes
+    `- Round subtotal
+    `- Total (sum of round subtotals)
+      `- Stands out – bigger text, slightly offset
+      `- Players ordered by total score
+
+Is it the last round:
+  `- How many rounds? - 3 for now
+  `- Yes:
+    `- Declare winner with more celebrations
+      `- Crown drawn on
+    `- “Play again with same players” button
+  `- No: Begin next round
+
+Screen transitions
+Matchmaking – future development
+Music
+Sound effects
+cheering (mentioned earlier)
+Platform options
+MIT App Inventor
+Android studio
+Other
+Engine options
+Create my own (Time/labor intensive)
+Open source available online – these are cross-platform
+pygame – simple; has some long-time unfixed bugs to work around
+OcempGUI – Uses pygame and provides simple OOTB solution elements
+http://ocemp.sourceforge.net/gui.html
+pyjs – compile python into js packaged application for web deployment
+pyjamas – what a lot of people are using for pyjs applications
+DO NOT NEED mobile support – the options below would help with Android/iOS, but I'll just need a hosted web application.
+Kivy: iOS build tools require python 2.7
+BeeWare: This one looks more promising: https://www.activestate.com/blog/the-best-python-frameworks-for-mobile-development-and-how-to-use-them/
+Pay for one
+Process to release to the android store
+App cost? Ads?
+Port to Apple store as well – future development
+
+- Intellectual property rights at some point.
