@@ -18,3 +18,6 @@ def lobby():
         return render_template("welcome.html", title="Welcome", name=name)
 
     return render_template("get_name_form.html", title="Add player")
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", debug=True)
