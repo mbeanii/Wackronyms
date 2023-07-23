@@ -19,5 +19,10 @@ def lobby():
 
     return render_template("get_name_form.html", title="Add player")
 
+@app.route("/host", methods=["GET"])
+def host():
+    global wackronyms
+    return render_template("host.html", player_list=wackronyms.player_list)
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
