@@ -22,7 +22,7 @@ def lobby():
 @app.route("/host", methods=["GET"])
 def host():
     global wackronyms
-    return render_template("host.html", player_list=wackronyms.player_list)
+    return render_template("host.html", player_names=wackronyms.get_player_names())
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

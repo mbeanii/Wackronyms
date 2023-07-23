@@ -3,6 +3,7 @@ from player import Player, Color
 import randomLetter
 import random
 from paths import COLOR_CONFIG_PATH
+from typing import List
 
 
 def load_colors(path: str) -> list:
@@ -29,6 +30,9 @@ class Wackronyms:
 
     def add_player(self, name):
         self.player_list.append(Player(name, self.color_list[len(self.player_list)]))
+    
+    def get_player_names(self) -> List[str]:
+        return [player.name for player in self.player_list]
 
 if __name__ == '__main__':
     wackronyms = Wackronyms()
