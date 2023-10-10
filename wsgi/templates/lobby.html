@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Lobby</title>
+  </head>
+    <body>
+      <p>Welcome to Wackronyms, {{ name }}</p>
+      <button id="startGameButton">Start Game</button>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script>
+          // JavaScript code for handling the "start game" button click event
+          $(document).ready(function() {
+              $("#startGameButton").click(function() {
+                  // Make an AJAX request to the server to start the game
+                  $.get("/start_game", function(data) {
+                      // Update the content of the /host page
+                      // This can be customized based on your needs
+                      // For example, you can redirect to /host or load new content
+                      window.location.href = "/player_round1";
+                  });
+              });
+          });
+      </script>
+    </body>
+</html>

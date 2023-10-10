@@ -19,14 +19,27 @@ def lobby():
             return render_template("get_name_form.html", title="No Name Provided")
         wackronyms.add_player(name)
         socketio.emit('update_list', {'player_list': wackronyms.get_player_names()}, namespace='/host')
-        return render_template("welcome.html", title="Welcome", name=name)
+        return render_template("lobby.html", title="Lobby", name=name)
 
     return render_template("get_name_form.html", title="Add player")
+
+@app.route("/player_round1", methods=["GET"])
+def player_round1():
+    return render_template("player_round1.html")
 
 @app.route("/host", methods=["GET"])
 def host():
     global wackronyms
     return render_template("host.html", player_names=wackronyms.get_player_names())
+
+@app.route("/host_round1", methods=["GET"])
+def host_round1():
+    return render_template("host_round1.html")
+
+@app.route("/start_game", methods=["GET"])
+def start_game():
+    socketio.emit('route_to', {'url': "/host_round1"}, namespace='/host')
+    return jsonify({'message': 'Game started'})
 
 @socketio.on('connect', namespace='/host')
 def handle_connect():

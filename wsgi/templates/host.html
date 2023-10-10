@@ -25,6 +25,11 @@
                 // Update the content of the player list dynamically
                 var playerListElement = document.getElementById('playerList');
                 playerListElement.textContent = data.player_list.join(', ');
+            });
+
+            socket.on('reroute', function(data) {
+                console.log('Received update:', data);
+                    window.location.href = data.url;
           });
         </script>
     </body>
