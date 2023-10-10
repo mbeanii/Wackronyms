@@ -1,11 +1,11 @@
 Wackronyms App (wAPPronyms?)
 
 Main screen
-`- Create Match Button
-  `- Enter player name
+`- Create Match Button -
+  `- Enter player name X
   `- Go to lobby
 `- Join Match Button
-  `- Enter join code
+  `- Enter join code 
   `- Enter player name (Black text)
   `- Go to lobby
 `- Interface with keypad to enter responses and display/edit them on the screen

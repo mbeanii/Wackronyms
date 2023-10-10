@@ -31,7 +31,6 @@ def host():
 @socketio.on('connect', namespace='/host')
 def handle_connect():
     logging.debug('WebSocket client connected')
-    socketio.emit('update_list', {'player_list': wackronyms.get_player_names()}, namespace='/host')
 
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", debug=True)
