@@ -1,38 +1,47 @@
 [
     {
-        "name": "Bright Blue",
-        "ansi_escape_sequence": "\\033[94m"
+        "name": "blue",
+        "ansi_escape_sequence": "\\033[94m",
+        "hex_key": "#0000FF"
     },
     {
-        "name": "Bright Red",
-        "ansi_escape_sequence": "\\033[91m"
+        "name": "red",
+        "ansi_escape_sequence": "\\033[91m",
+        "hex_key": "#FF0000"
     },
     {
-        "name": "Bright Green",
-        "ansi_escape_sequence": "\\033[92m"
+        "name": "green",
+        "ansi_escape_sequence": "\\033[92m",
+        "hex_key": "#008000"
     },
     {
-        "name": "Bright Cyan",
-        "ansi_escape_sequence": "\\033[96m"
+        "name": "cyan",
+        "ansi_escape_sequence": "\\033[96m",
+        "hex_key": "#00FFFF"
     },
     {
-        "name": "Bright Magenta",
-        "ansi_escape_sequence": "\\033[95m"
+        "name": "magenta",
+        "ansi_escape_sequence": "\\033[95m",
+        "hex_key": "#FF00FF"
     },
     {
-        "name": "Bright Yellow",
-        "ansi_escape_sequence": "\\033[93m"
+        "name": "yellow",
+        "ansi_escape_sequence": "\\033[93m",
+        "hex_key": "#FFFF00"
     },
     {
-        "name": "Bright Black",
-        "ansi_escape_sequence": "\\033[90m"
+        "name": "lime",
+        "ansi_escape_sequence": "\\033[92m",
+        "hex_key": "#00FF00"
     },
     {
-        "name": "Bright Black",
-        "ansi_escape_sequence": "\\033[90m"
+        "name": "purple",
+        "ansi_escape_sequence": "\\033[95m",
+        "hex_key": "#800080"
     },
     {
         "name": "Color Off",
-        "ansi_escape_sequence": "\\033[0m"
+        "ansi_escape_sequence": "\\033[0m",
+        "hex_key": "#FFFFFF"
     }
 ]

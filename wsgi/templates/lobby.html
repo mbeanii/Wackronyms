@@ -11,13 +11,13 @@
       <script>
           // JavaScript code for handling the "start game" button click event
           $(document).ready(function() {
+              // Get the player's name from the page
+              var playerName = "{{ name }}";
+
               $("#startGameButton").click(function() {
                   // Make an AJAX request to the server to start the game
                   $.get("/start_game", function(data) {
-                      // Update the content of the /host page
-                      // This can be customized based on your needs
-                      // For example, you can redirect to /host or load new content
-                      window.location.href = "/player_round1";
+                      window.location.href = "/player_round1?name=" + playerName;
                   });
               });
           });

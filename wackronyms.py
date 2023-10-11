@@ -20,7 +20,7 @@ def load_colors(path: str) -> list:
     """
     with open(path, "r") as f:
         colordict_list = json.loads(f.read())
-    return [Color(colordict["name"], colordict["ansi_escape_sequence"]) for colordict in colordict_list]
+    return [Color(colordict["name"], colordict["ansi_escape_sequence"], colordict["hex_key"]) for colordict in colordict_list]
 
 
 class Wackronyms:
@@ -33,11 +33,9 @@ class Wackronyms:
     
     def get_player_names(self) -> List[str]:
         return [player.name for player in self.player_list]
+    
+    def get_player(self, name: str) -> Player:
+        for player in self.player_list:
+            if player.name == name:
+                return player
 
-if __name__ == '__main__':
-    wackronyms = Wackronyms()
-    wackronyms.add_player("Brian")
-    wackronyms.add_player("Grammy")
-    wackronyms.add_player("Marcus")
-
-    print(randomLetter.get_random_string(random.randint(3, 6)))

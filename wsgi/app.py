@@ -25,7 +25,16 @@ def lobby():
 
 @app.route("/player_round1", methods=["GET"])
 def player_round1():
-    return render_template("player_round1.html")
+    player_name = request.args.get("name")
+    player = wackronyms.get_player(player_name)
+    logging.debug(f"player_name: {player_name}")
+    logging.debug(f"player name: {player.name}")
+    logging.debug(f"player color: {player.color.hex_key}")
+
+    if player is None:
+        return "Player not found"
+
+    return render_template("player_round1.html", player=player)
 
 @app.route("/host", methods=["GET"])
 def host():
