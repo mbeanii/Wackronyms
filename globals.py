@@ -1,0 +1,1 @@
+MAX_PROMPTS = 3

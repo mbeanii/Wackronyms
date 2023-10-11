@@ -15,6 +15,10 @@
         <br>
         <div id="playerList"></div>
 
+        <div id="promptList">
+          <!-- Display the submitted prompts here -->
+        </div>
+
         <script>
           // Define the function to format the player list
           function formatPlayerList(data) {
@@ -34,15 +38,13 @@
               });
           }
       
-          // JavaScript code for WebSocket connection
+          // Websocket connection
           var socket = io.connect('http://' + document.domain + ':' + location.port + '/host');
       
-          // Event handler for when the connection is established
           socket.on('connect', function() {
               console.log('WebSocket connected');
           });
       
-          // Event handler for receiving 'update_list' events
           socket.on('update_list', function(data) {
               console.log('Received update:', data);
               formatPlayerList(data);
@@ -51,6 +53,16 @@
           socket.on('reroute', function(data) {
               console.log('Received update:', data);
               window.location.href = data.url;
+          });
+
+          socket.on('update_prompts', function(data) {
+              var promptListElement = document.getElementById('promptList');
+              promptListElement.innerHTML = ''; // Clear previous prompts
+              data.prompts.forEach(function(prompt) {
+                  var promptElement = document.createElement('p');
+                  promptElement.textContent = prompt.player.name + ": " + prompt.prompt;
+                  promptListElement.appendChild(promptElement);
+              });
           });
       
           // Call the formatPlayerList function when the page loads with the data from Flask

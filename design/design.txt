@@ -3,22 +3,22 @@ Wackronyms App (wAPPronyms?)
 Main screen
 `- Create Match Button -
   `- Enter player name X
-  `- Go to lobby
+  `- Go to lobby X
 `- Join Match Button
   `- Enter join code 
-  `- Enter player name (Black text)
-  `- Go to lobby
+  `- Enter player name (Black text) X
+  `- Go to lobby X
 `- Interface with keypad to enter responses and display/edit them on the screen
-  `- Browser does the keypad interface
-  `- We'll just need to be able to process the browser inputs (probably a javascript job)
+  `- Browser does the keypad interface X
+  `- We'll just need to be able to process the browser inputs (probably a javascript job) X
 
 Lobby – join  code displayed at the top
 `- Min/max players
   `- 3 - 8
 `- Player colors
-  `- Random color assigned at join
+  `- Random color assigned at join X
   `- Make player-selectable is future development
-  `- Text is identifiable as being from this player when it is this color from here on
+  `- Text is identifiable as being from this player when it is this color from here on - (working so far)
 `- Player name – editable at this stage?
 
 Gameplay

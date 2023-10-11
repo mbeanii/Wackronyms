@@ -2,17 +2,36 @@
 <html>
   <head>
       <title>Lobby</title>
+      <script src="/js/prompt_entry.js"></script>
   </head>
     <body>
       <p>Welcome to Wackronyms,<span style="color: {{ player.color.hex_key }}"> {{ player.name }}</span></p>
-      <button id="startGameButton">Start Game</button>
+
+      <!-- Create a modal for prompt entry -->
+      <div id="promptEntryModal" class="modal">
+          <div class="modal-content">
+              <h2>Enter Prompts</h2>
+              <form id="promptForm">
+                  <input type="text" id="promptInput" placeholder="Enter a prompt">
+                  <button type="button" id="addPromptButton">Add Prompt</button>
+              </form>
+              <div id="promptList">
+                  <!-- Display the entered prompts here -->
+              </div>
+          </div>
+      </div>
+
+      <div id="startGameButton">
+          <button id="startGameButton">Start Game</button>
+      </div>
+
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
       <script>
           // JavaScript code for handling the "start game" button click event
           $(document).ready(function() {
               // Get the player's name from the page
-              var playerName = "{{ name }}";
+              var playerName = "{{ player.name }}";
 
               $("#startGameButton").click(function() {
                   // Make an AJAX request to the server to start the game
@@ -21,6 +40,15 @@
                   });
               });
           });
+
+          // Show the prompt entry modal; hide start game button
+          var startGameButton = document.getElementById("startGameButton");
+          var promptEntryModal = document.getElementById("promptEntryModal");
+          promptEntryModal.style.display = "block";
+          startGameButton.style.display = "none";
+
+          // Close the prompt entry modal
+          // promptEntryModal.style.display = "none";
       </script>
     </body>
 </html>

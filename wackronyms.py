@@ -3,6 +3,7 @@ from player import Player, Color
 import randomLetter
 import random
 from paths import COLOR_CONFIG_PATH
+from globals import MAX_PROMPTS
 from typing import List
 
 
@@ -27,6 +28,7 @@ class Wackronyms:
     def __init__(self):
         self.color_list = load_colors(COLOR_CONFIG_PATH)
         self.player_list = []
+        self.prompt_list = []
 
     def add_player(self, name) -> Player:
         player = Player(name, self.color_list[len(self.player_list)])
@@ -41,4 +43,10 @@ class Wackronyms:
             if player.name == name:
                 return player
 
+    def get_prompt_list(self):
+        return self.prompt_list
+    
+    def add_prompt(self, player: Player, prompt: str) -> None:
+        if len(self.prompts) < MAX_PROMPTS:
+            self.prompt_list.append({'player': player, 'prompt': prompt})
 
