@@ -28,14 +28,17 @@ class Wackronyms:
         self.color_list = load_colors(COLOR_CONFIG_PATH)
         self.player_list = []
 
-    def add_player(self, name):
-        self.player_list.append(Player(name, self.color_list[len(self.player_list)]))
+    def add_player(self, name) -> Player:
+        player = Player(name, self.color_list[len(self.player_list)])
+        self.player_list.append(player)
+        return player
     
-    def get_player_names(self) -> List[str]:
-        return [player.name for player in self.player_list]
+    def serialize_player_list(self) -> List[str]:
+        return [player.to_dict() for player in self.player_list]
     
     def get_player(self, name: str) -> Player:
         for player in self.player_list:
             if player.name == name:
                 return player
+
 

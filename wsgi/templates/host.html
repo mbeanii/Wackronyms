@@ -3,34 +3,59 @@
     <head>
         <title>Wackronyms</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+        <style>
+            /* CSS class for player names */
+            .player-name {
+                margin-right: 10px; /* Add some spacing between player names */
+            }
+        </style>
     </head>
     <body>
         <p>Players currently here: </p>
         <br>
-        <p id="playerList"></p>
+        <div id="playerList"></div>
 
         <script>
-            // JavaScript code for WebSocket connection
-            var socket = io.connect('http://' + document.domain + ':' + location.port + '/host');
-            
-            // Event handler for when the connection is established
-            socket.on('connect', function() {
-                console.log('WebSocket connected');
-            });
-    
-            // Event handler for receiving 'update_list' events
-            socket.on('update_list', function(data) {
-                console.log('Received update:', data);
-                
-                // Update the content of the player list dynamically
-                var playerListElement = document.getElementById('playerList');
-                playerListElement.textContent = data.player_list.join(', ');
-            });
-
-            socket.on('reroute', function(data) {
-                console.log('Received update:', data);
-                    window.location.href = data.url;
+          // Define the function to format the player list
+          function formatPlayerList(data) {
+              // Get the player list element
+              var playerListElement = document.getElementById('playerList');
+      
+              // Clear the previous content
+              playerListElement.innerHTML = '';
+      
+              // Iterate through the player list and add each player's name with their color
+              data.player_list.forEach(function(player) {
+                  var playerSpan = document.createElement('span');
+                  playerSpan.textContent = player.name;
+                  playerSpan.style.color = player.color;
+                  playerSpan.className = 'player-name';
+                  playerListElement.appendChild(playerSpan);
+              });
+          }
+      
+          // JavaScript code for WebSocket connection
+          var socket = io.connect('http://' + document.domain + ':' + location.port + '/host');
+      
+          // Event handler for when the connection is established
+          socket.on('connect', function() {
+              console.log('WebSocket connected');
           });
-        </script>
+      
+          // Event handler for receiving 'update_list' events
+          socket.on('update_list', function(data) {
+              console.log('Received update:', data);
+              formatPlayerList(data);
+          });
+      
+          socket.on('reroute', function(data) {
+              console.log('Received update:', data);
+              window.location.href = data.url;
+          });
+      
+          // Call the formatPlayerList function when the page loads with the data from Flask
+          formatPlayerList({ player_list: {{ player_names|tojson|safe }} });
+      </script>
+      
     </body>
 </html>

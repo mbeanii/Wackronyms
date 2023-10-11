@@ -4,7 +4,7 @@
       <title>Lobby</title>
   </head>
     <body>
-      <p>Welcome to Wackronyms, {{ name }}</p>
+      <p>Welcome to Wackronyms,<span style="color: {{ player.color.hex_key }}"> {{ player.name }}</span></p>
       <button id="startGameButton">Start Game</button>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

@@ -9,6 +9,7 @@ wackronyms = Wackronyms()
 logging.basicConfig(level=logging.DEBUG)
 
 @app.route("/", methods=["GET", "POST"])
+@app.route("/player", methods=["GET", "POST"])
 @app.route("/lobby", methods=["GET", "POST"])
 def lobby():
     global wackronyms
@@ -17,9 +18,9 @@ def lobby():
         name = request.form.get("name").strip()
         while not name:
             return render_template("get_name_form.html", title="No Name Provided")
-        wackronyms.add_player(name)
-        socketio.emit('update_list', {'player_list': wackronyms.get_player_names()}, namespace='/host')
-        return render_template("lobby.html", title="Lobby", name=name)
+        player = wackronyms.add_player(name)
+        socketio.emit('update_list', {'player_list': wackronyms.serialize_player_list()}, namespace='/host')
+        return render_template("lobby.html", title="Lobby", player=player)
 
     return render_template("get_name_form.html", title="Add player")
 
@@ -27,9 +28,6 @@ def lobby():
 def player_round1():
     player_name = request.args.get("name")
     player = wackronyms.get_player(player_name)
-    logging.debug(f"player_name: {player_name}")
-    logging.debug(f"player name: {player.name}")
-    logging.debug(f"player color: {player.color.hex_key}")
 
     if player is None:
         return "Player not found"
@@ -39,7 +37,7 @@ def player_round1():
 @app.route("/host", methods=["GET"])
 def host():
     global wackronyms
-    return render_template("host.html", player_names=wackronyms.get_player_names())
+    return render_template("host.html", player_names=wackronyms.serialize_player_list())
 
 @app.route("/host_round1", methods=["GET"])
 def host_round1():
