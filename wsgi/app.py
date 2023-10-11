@@ -38,7 +38,7 @@ def host_round1():
 
 @app.route("/start_game", methods=["GET"])
 def start_game():
-    socketio.emit('route_to', {'url': "/host_round1"}, namespace='/host')
+    socketio.emit('reroute', {'url': "/host_round1"}, namespace='/host')
     return jsonify({'message': 'Game started'})
 
 @socketio.on('connect', namespace='/host')
