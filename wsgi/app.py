@@ -25,37 +25,29 @@ def lobby():
 
     return render_template("get_name_form.html", title="Add player")
 
-@app.route("/player_round1", methods=["GET"])
-def player_round1():
-    player_name = request.args.get("name")
-    player = wackronyms.get_player(player_name)
-
-    if player is None:
-        return "Player not found"
-
-    return render_template("player_round1.html", player=player)
-
 @app.route("/host", methods=["GET"])
 def host():
     global wackronyms
     return render_template("host.html", player_names=wackronyms.serialize_player_list())
 
-@app.route("/host_round1", methods=["GET"])
-def host_round1():
-    return render_template("host_round1.html")
+@app.route("/advance_game", methods=["GET"])
+def advance_game():
+    wackronyms.advance_stage()
+    letters = wackronyms.get_random_string()
 
-@app.route("/start_game", methods=["GET"])
-def start_game():
-    socketio.emit('reroute', {'url': "/host_round1"}, namespace='/host')
-    return jsonify({'message': 'Game started'})
+    socketio.emit('transition', {'stage': wackronyms.current_stage, 'letters': letters}, namespace='/host')
+    
+    socketio.emit('transition', {'stage': wackronyms.current_stage, 'letters': letters}, namespace='/player')
+
+    return "Game started"
 
 @socketio.on('connect', namespace='/host')
-def handle_connect():
+def connect_host():
     logging.debug('WebSocket client connected')
 
-@app.route("/js/prompt_entry.js")
-def serve_prompt_entry_js():
-    return app.send_static_file("js/prompt_entry.js")
+@socketio.on('connect', namespace='/player')
+def connect_player():
+    logging.debug('WebSocket client connected')
 
 @app.route("/submit_prompt", methods=["POST"])
 def submit_prompt():

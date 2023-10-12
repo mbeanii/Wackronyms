@@ -1,9 +1,9 @@
 import json
 from player import Player, Color
-import randomLetter
-import random
+from randomLetter import get_weighted_random_letter
+from random import randint
 from paths import COLOR_CONFIG_PATH
-from globals import MAX_PROMPTS
+from globals import MAX_PROMPTS, STAGES
 from typing import List
 
 
@@ -29,6 +29,9 @@ class Wackronyms:
         self.color_list = load_colors(COLOR_CONFIG_PATH)
         self.player_list = []
         self.prompt_list = []
+        self.stages = STAGES
+        self.stage_counter = 0
+        self.current_stage = self.stages[self.stage_counter]
 
     def add_player(self, name) -> Player:
         player = Player(name, self.color_list[len(self.player_list)])
@@ -49,4 +52,18 @@ class Wackronyms:
     def add_prompt(self, player: Player, prompt: str) -> None:
         if len(self.prompt_list) < MAX_PROMPTS:
             self.prompt_list.append({'player': player.to_dict(), 'prompt': prompt})
+    
+    def advance_stage(self):
+        self.stage_counter += 1
+        self.current_stage = self.stages[self.stage_counter]
 
+    @staticmethod
+    def get_random_string():
+        length = randint(3,6)
+        if length <= 0:
+            raise ValueError(f"Please provide an integer length argument of 1 or more.")
+        rand_string = ''
+        for i in range(length):
+            letter = get_weighted_random_letter()
+            rand_string += letter
+        return rand_string

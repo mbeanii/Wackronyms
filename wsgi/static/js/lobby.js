@@ -6,6 +6,33 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var prompts = [];
 
+    // Websocket connection
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/player');
+    
+    socket.on('connect', function() {
+        console.log('WebSocket connected');
+    });
+      
+    socket.on('transition', function(data) {
+        console.log('Received update:', data);
+        var stage = data.stage;
+        var letters = data.letters;
+
+        // Clear screen
+        while (document.body.firstChild) {
+            document.body.removeChild(document.body.firstChild);
+        }
+        // Write on a fresh canvas
+        var stageElement = document.createElement("div");
+        stageElement.textContent = stage;
+        document.body.appendChild(stageElement);
+
+        var lettersElement = document.createElement("div");
+        lettersElement.textContent = letters;
+        lettersElement.style.color = playerColor;
+        document.body.appendChild(lettersElement);
+    });
+
     // Function to add a prompt to the list
     function addPrompt(promptText) {
         var promptItem = document.createElement("div");
@@ -15,9 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // JavaScript code for handling the "start game" button click event
     $("#startGameButton").click(function() {
-        $.get("/start_game", function(data) {
-            window.location.href = "/player_round1?name=" + playerName;
-        });
+        $.get("/advance_game", function(data) {});
     });
 
     // Show the prompt entry modal; hide start game button

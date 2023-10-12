@@ -14,10 +14,12 @@
         <p>Players currently here: </p>
         <br>
         <div id="playerList"></div>
-
+        <br>
+        <br>
         <div id="promptList">
-          <!-- Display the submitted prompts here -->
+            <p>Submitted prompts: </p>
         </div>
+        <br>
 
         <script>
           // Define the function to format the player list
@@ -50,24 +52,39 @@
               formatPlayerList(data);
           });
       
-          socket.on('reroute', function(data) {
-              console.log('Received update:', data);
-              window.location.href = data.url;
-          });
+          socket.on('transition', function(data) {
+                console.log('Received update:', data);
+                var stage = data.stage;
+                var letters = data.letters;
+
+                // Clear screen
+                while (document.body.firstChild) {
+                    document.body.removeChild(document.body.firstChild);
+				}
+                // Write on a fresh canvas
+                var stageElement = document.createElement("div");
+                stageElement.textContent = stage;
+                document.body.appendChild(stageElement);
+
+                var lettersElement = document.createElement("div");
+                lettersElement.textContent = letters;
+                document.body.appendChild(lettersElement);
+			});
 
           socket.on('update_prompts', function(data) {
               var promptListElement = document.getElementById('promptList');
               promptListElement.innerHTML = ''; // Clear previous prompts
               data.prompts.forEach(function(prompt) {
                   var promptElement = document.createElement('p');
-                  promptElement.textContent = prompt.player.name + ": " + prompt.prompt;
+                  promptElement.textContent = prompt.prompt;
+                  promptElement.style.color = prompt.player.color;
                   promptListElement.appendChild(promptElement);
               });
           });
       
           // Call the formatPlayerList function when the page loads with the data from Flask
           formatPlayerList({ player_list: {{ player_names|tojson|safe }} });
-      </script>
+       </script>
       
     </body>
 </html>

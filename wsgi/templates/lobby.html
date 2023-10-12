@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <title>Lobby</title>
+        <title>Lobby</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script> 
+            var playerName = "{{ player.name }}";
+            var playerColor = "{{ player.color.hex_key}}"
+        </script>
+        <script src="{{ url_for('static', filename='js/lobby.js') }}"></script>
   </head>
     <body>
-      <p>Welcome to Wackronyms,<span style="color: {{ player.color.hex_key }}"> {{ player.name }}</span></p>
+      <p>Welcome to Wackronyms,<span style="color: {{player.color.hex_key}}"> {{ player.name }}</span></p>
 
       <!-- Create a modal for prompt entry -->
       <div id="promptEntryModal" class="modal">
@@ -15,6 +22,7 @@
                   <button type="button" id="addPromptButton">Add Prompt</button>
               </form>
               <div id="promptList">
+                  <br>
                   <!-- Display the entered prompts here -->
               </div>
           </div>
@@ -23,12 +31,7 @@
       <div id="startGameButton">
           <button id="startGameButton">Start Game</button>
       </div>
-
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-      <script>
-          var playerName = "{{ player.name }}";
-      </script>
-      <script src="/js/lobby.js"></script>
+      
       
     </body>
 </html>

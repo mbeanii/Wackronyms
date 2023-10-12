@@ -35,17 +35,6 @@ def get_weighted_random_letter():
                     p=list(letters_by_word_start_frequency.values()))
     return letter[0]
 
-
-def get_random_string(length):
-    if length <= 0:
-        raise ValueError(f"Please provide an integer length argument of 1 or more.")
-    rand_string = ''
-    for i in range(length):
-        letter = get_weighted_random_letter()
-        rand_string += letter
-    return rand_string
-
-
 def test_weights():
     count = {}
     for i in range(10000):
