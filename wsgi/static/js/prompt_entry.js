@@ -13,6 +13,19 @@ document.addEventListener("DOMContentLoaded", function() {
         promptList.appendChild(promptItem);
     }
 
+    // JavaScript code for handling the "start game" button click event
+    $("#startGameButton").click(function() {
+        $.get("/start_game", function(data) {
+            window.location.href = "/player_round1?name=" + playerName;
+        });
+    });
+
+    // Show the prompt entry modal; hide start game button
+    var startGameButton = document.getElementById("startGameButton");
+    var promptEntryModal = document.getElementById("promptEntryModal");
+    promptEntryModal.style.display = "block";
+    startGameButton.style.display = "none";
+
     addPromptButton.addEventListener("click", function() {
         var promptText = promptInput.value.trim();
     
@@ -27,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     addPrompt(promptText);
                     prompts.push(promptText);
                     promptInput.value = "";
-                    var playerName = {{ player.name }};
                     $.post("/submit_prompt", { player_name: playerName, prompt: promptText }, function(data) {
                         // Clear the input field after submission
                         promptInput.value = "";
@@ -41,5 +53,5 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error("Failed to retrieve data from /num_prompts");
             });
         }
-    });    
+    });
 });

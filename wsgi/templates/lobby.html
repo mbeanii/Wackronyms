@@ -25,30 +25,11 @@
           <button id="startGameButton">Start Game</button>
       </div>
 
-
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
       <script>
-          // JavaScript code for handling the "start game" button click event
-          $(document).ready(function() {
-              // Get the player's name from the page
-              var playerName = "{{ player.name }}";
-
-              $("#startGameButton").click(function() {
-                  // Make an AJAX request to the server to start the game
-                  $.get("/start_game", function(data) {
-                      window.location.href = "/player_round1?name=" + playerName;
-                  });
-              });
-          });
-
-          // Show the prompt entry modal; hide start game button
-          var startGameButton = document.getElementById("startGameButton");
-          var promptEntryModal = document.getElementById("promptEntryModal");
-          promptEntryModal.style.display = "block";
-          startGameButton.style.display = "none";
-
-          // Close the prompt entry modal
-          // promptEntryModal.style.display = "none";
+          var playerName = "{{ player.name }}";
       </script>
+      <script src="/js/prompt_entry.js"></script>
+      
     </body>
 </html>
