@@ -47,6 +47,6 @@ class Wackronyms:
         return self.prompt_list
     
     def add_prompt(self, player: Player, prompt: str) -> None:
-        if len(self.prompts) < MAX_PROMPTS:
-            self.prompt_list.append({'player': player, 'prompt': prompt})
+        if len(self.prompt_list) < MAX_PROMPTS:
+            self.prompt_list.append({'player': player.to_dict(), 'prompt': prompt})
 
