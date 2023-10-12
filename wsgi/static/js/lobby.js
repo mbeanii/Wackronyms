@@ -44,6 +44,10 @@ document.addEventListener("DOMContentLoaded", function() {
                         // Clear the input field after submission
                         promptInput.value = "";
                     });
+                    if (numPrompts == maxPrompts - 1){
+                        promptEntryModal.style.display = "none";
+                        startGameButton.style.display = "block";
+                    }
                 } else {
                     var message = "You can enter only " + maxPrompts + " prompts.";
                     alert(message);
