@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     socket.on('transition', function(data) {
         console.log('Received update:', data);
         var stage = data.stage;
+        var prompt = data.prompt;
         var letters = data.letters;
 
         // Clear screen
@@ -26,6 +27,10 @@ document.addEventListener("DOMContentLoaded", function() {
         var stageElement = document.createElement("div");
         stageElement.textContent = stage;
         document.body.appendChild(stageElement);
+
+        var promptElement = document.createElement("div");
+        promptElement.textContent = prompt;
+        document.body.appendChild(promptElement);
 
         var lettersElement = document.createElement("div");
         lettersElement.textContent = letters;

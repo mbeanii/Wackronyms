@@ -46,8 +46,8 @@ class Wackronyms:
             if player.name == name:
                 return player
 
-    def get_prompt_list(self):
-        return self.prompt_list
+    def get_prompt(self, index: int):
+        return self.prompt_list[index].get('prompt')
     
     def add_prompt(self, player: Player, prompt: str) -> None:
         if len(self.prompt_list) < MAX_PROMPTS:

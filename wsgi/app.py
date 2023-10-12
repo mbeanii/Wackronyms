@@ -18,7 +18,9 @@ def lobby():
     if request.method == "POST":
         name = request.form.get("name").strip()
         while not name:
-            return render_template("get_name_form.html", title="No Name Provided")
+            return render_template("get_name_form.html", title="Add player", error="Come on, what's your name?")
+        while name in [player.name for player in wackronyms.player_list]:
+            return render_template("get_name_form.html", title="Add player", error="Somebody already picked that one.")
         player = wackronyms.add_player(name)
         socketio.emit('update_list', {'player_list': wackronyms.serialize_player_list()}, namespace='/host')
         return render_template("lobby.html", title="Lobby", player=player)
@@ -34,10 +36,11 @@ def host():
 def advance_game():
     wackronyms.advance_stage()
     letters = wackronyms.get_random_string()
-
-    socketio.emit('transition', {'stage': wackronyms.current_stage, 'letters': letters}, namespace='/host')
     
-    socketio.emit('transition', {'stage': wackronyms.current_stage, 'letters': letters}, namespace='/player')
+
+    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/host')
+    
+    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/player')
 
     return "Game started"
 
@@ -57,14 +60,14 @@ def submit_prompt():
     player = wackronyms.get_player(player_name)
     if player and prompt:
         wackronyms.add_prompt(player, prompt)
-        socketio.emit('update_prompts', {'prompts': wackronyms.get_prompt_list()}, namespace='/host')
+        socketio.emit('update_prompts', {'prompts': wackronyms.prompt_list}, namespace='/host')
     return jsonify({'message': 'Prompt submitted'})
 
 @app.route("/num_prompts", methods=["GET"])
 def get_num_prompts():
     global wackronyms
     data = {
-        "num_prompts": len(wackronyms.get_prompt_list()),
+        "num_prompts": len(wackronyms.prompt_list),
         "max_prompts": MAX_PROMPTS
     }
     return jsonify(data)
