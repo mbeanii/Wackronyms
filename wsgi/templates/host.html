@@ -16,8 +16,8 @@
         <div id="playerList"></div>
         <br>
         <br>
+        <p>Submitted prompts: </p>
         <div id="promptList">
-            <p>Submitted prompts: </p>
         </div>
         <br>
 
@@ -37,6 +37,17 @@
                   playerSpan.style.color = player.color;
                   playerSpan.className = 'player-name';
                   playerListElement.appendChild(playerSpan);
+              });
+          }
+
+          function formatPromptList(data) {
+              var promptListElement = document.getElementById('promptList');
+              promptListElement.innerHTML = ''; // Clear previous prompts
+              data.prompt_list.forEach(function(prompt) {
+                  var promptElement = document.createElement('p');
+                  promptElement.textContent = prompt.prompt;
+                  promptElement.style.color = prompt.player.color;
+                  promptListElement.appendChild(promptElement);
               });
           }
       
@@ -77,18 +88,12 @@
 			});
 
           socket.on('update_prompts', function(data) {
-              var promptListElement = document.getElementById('promptList');
-              promptListElement.innerHTML = ''; // Clear previous prompts
-              data.prompts.forEach(function(prompt) {
-                  var promptElement = document.createElement('p');
-                  promptElement.textContent = prompt.prompt;
-                  promptElement.style.color = prompt.player.color;
-                  promptListElement.appendChild(promptElement);
-              });
+              formatPromptList(data);
           });
       
           // Call the formatPlayerList function when the page loads with the data from Flask
           formatPlayerList({ player_list: {{ player_names|tojson|safe }} });
+          formatPromptList({ prompt_list: {{ prompt_list|tojson|safe }}})
        </script>
       
     </body>

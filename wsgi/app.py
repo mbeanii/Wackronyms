@@ -30,7 +30,7 @@ def lobby():
 @app.route("/host", methods=["GET"])
 def host():
     global wackronyms
-    return render_template("host.html", player_names=wackronyms.serialize_player_list())
+    return render_template("host.html", player_names=wackronyms.serialize_player_list(), prompt_list=wackronyms.prompt_list)
 
 @app.route("/advance_game", methods=["GET"])
 def advance_game():
@@ -60,7 +60,7 @@ def submit_prompt():
     player = wackronyms.get_player(player_name)
     if player and prompt:
         wackronyms.add_prompt(player, prompt)
-        socketio.emit('update_prompts', {'prompts': wackronyms.prompt_list}, namespace='/host')
+        socketio.emit('update_prompts', {'prompt_list': wackronyms.prompt_list}, namespace='/host')
     return jsonify({'message': 'Prompt submitted'})
 
 @app.route("/num_prompts", methods=["GET"])
