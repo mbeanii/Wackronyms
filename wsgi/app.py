@@ -72,5 +72,24 @@ def get_num_prompts():
     }
     return jsonify(data)
 
+@app.route("/letters", methods=["GET"])
+def get_letters():
+    global wackronyms
+    data = {
+        "letters": wackronyms.letters
+    }
+    return jsonify(data)
+
+@app.route("/response", methods=["POST"])
+def response():
+    global wackronyms
+    player_name = request.form.get("player_name")
+    response = request.form.get("response")
+    player = wackronyms.get_player(player_name)
+    if player and response:
+        wackronyms.add_response(player, response)
+        socketio.emit('update_response', {'response_list': tbd}, namespace='/host')
+    return jsonify({'message': 'Prompt submitted'})
+
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", debug=True)

@@ -54,8 +54,6 @@ document.addEventListener("DOMContentLoaded", function() {
         lettersElement.textContent = letters;
         lettersElement.style.color = playerColor;
         document.body.appendChild(lettersElement);
-
-        addResponseModal();
     });
 
     function addPrompt(promptText) {
@@ -64,46 +62,68 @@ document.addEventListener("DOMContentLoaded", function() {
         promptList.appendChild(promptItem);
     }
 
-    $("#startGameButton").click(function() {
-        $.get("/advance_game", function(data) {});
-    });
+    function addResponse(responseText) {
+        var responseLabel = "Your Response:"
+        var responseLabelItem = document.createElement("div");
+        responseLabelItem.textContent = responseLabel;
+        responseLabelItem.appendChild(responseText);
+        var responseItem = document.createElement("div");
+        responseItem.textContent = responseText;
+        responseItem.appendChild(responseText);
+    }
 
-    $("#submitResponseButton").click(function() {
-        var responseText = responseInput.value.trim();
-    
-        if (responseText) {
-            // get letters
-            // check number of words matches number of letters
-            // check first letter of each word matches each letter
-            // submit
-            $.get("/num_prompts", function(data) {
-                var numPrompts = data["num_prompts"];
-                var maxPrompts = data["max_prompts"];
-                console.log("Number of prompts:", numPrompts);
-                console.log("Maximum prompts:", maxPrompts);
-    
-                if (numPrompts < maxPrompts) {
-                    addPrompt(responseText);
-                    prompts.push(responseText);
-                    responseInput.value = "";
-                    $.post("/submit_prompt", { player_name: playerName, prompt: responseText }, function(data) {
-                        responseInput.value = "";
-                    });
-                    if (numPrompts == maxPrompts - 1){
-                        promptEntryModal.style.display = "none";
-                        startGameButton.style.display = "block";
-                    }
-                } else {
-                    var message = "You can enter only " + maxPrompts + " prompts.";
-                    alert(message);
-                }
-            })
-            .fail(function() {
-                console.error("Failed to retrieve data from /num_prompts");
-            });
+    function wordsBegintWithCorrectLetters(words, letters){
+        let allMatch = true
+        for(let i = 0; i < letters.length; i++) {
+            if(letters[i].toLowerCase()  !== words[i][0].toLowerCase()) {
+                allMatch = false;
+                break; 
+            }
         }
+        return allMatch
+    }
+
+    $("#startGameButton").click(function() {
+        $.get("/advance_game", function(data) {
+            addResponseModal();
+            $("#submitResponseButton").click(function() {
+                var responseText = responseInput.value.trim();
+                if (responseText) {
+                    $.get("/letters", function(data) {
+                        var letters = data["letters"];
+                        console.log("letters:", letters);
+                        var words = responseText.split(" ")
+                        var wordCount = words.length;
+                        var lettersCount = letters.length
+            
+                        if (wordCount == lettersCount) {
+                            if (wordsBegintWithCorrectLetters(words, letters) == true) {
+                                addResponse(responseText);
+                                $.post("/submit_response", { player_name: playerName, prompt: responseText }, function(data) {
+                                    responseInput.value = "";
+                                });
+                                if (numPrompts == maxPrompts - 1){
+                                    promptEntryModal.style.display = "none";
+                                    startGameButton.style.display = "block";
+                                }
+                            } else {
+                                var message = 'Each word in your response should begin with each letter in "' + letters + '"';
+                                alert(message);
+                            }
+                        } else {
+                            var message = "Your response needs to be " + lettersCount + " words long.";
+                            alert(message);
+                        }
+                    })
+                    .fail(function() {
+                        console.error("Failed to retrieve data from /letters");
+                    });
+                }
+            });        
+        });
     });
 
+    
     // Show the prompt entry modal; hide start game button
     var startGameButton = document.getElementById("startGameButton");
     var promptEntryModal = document.getElementById("promptEntryModal");

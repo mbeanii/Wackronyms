@@ -30,8 +30,10 @@ class Wackronyms:
         self.player_list = []
         self.prompt_list = []
         self.stages = STAGES
+        self.current_round = 0
         self.stage_counter = 0
-        self.current_stage = self.stages[self.stage_counter]
+        self.current_stage = "lobby"
+        letters = None
 
     def add_player(self, name) -> Player:
         player = Player(name, self.color_list[len(self.player_list)])
@@ -50,20 +52,35 @@ class Wackronyms:
         return self.prompt_list[index].get('prompt')
     
     def add_prompt(self, player: Player, prompt: str) -> None:
-        if len(self.prompt_list) < MAX_PROMPTS:
+        num_prompts = len(self.prompt_list)
+        if num_prompts < MAX_PROMPTS:
             self.prompt_list.append({'player': player.to_dict(), 'prompt': prompt})
+        else:
+            raise Exception(f"Already at max number of prompts - {num_prompts}.")
     
     def advance_stage(self):
         self.stage_counter += 1
+
+        self.current_stage = ((self.current_stage + 1) % len(STAGES))
+        if self.current_stage == 0:
+            self.current_round += 1
+        
         self.current_stage = self.stages[self.stage_counter]
 
-    @staticmethod
-    def get_random_string():
+    def start_game(self):
+        self.current_stage = self.stages[0]
+        self.current_round = 1
+
+    def get_random_string(self):
+        """ Overwrites self.letters with a new random string. """
         length = randint(3,6)
         if length <= 0:
             raise ValueError(f"Please provide an integer length argument of 1 or more.")
-        rand_string = ''
+        self.letters = ''
         for i in range(length):
             letter = get_weighted_random_letter()
-            rand_string += letter
-        return rand_string
+            self.letters += letter
+        return self.letters
+    
+    def add_response(player: Player, response: str):
+        pass
