@@ -34,6 +34,7 @@ class Wackronyms:
         self.stage_counter = 0
         self.current_stage = "lobby"
         letters = None
+        self.responses = {} # {0: [{"player": "Marcus", "response": "My Wackronym"},... ]}
 
     def add_player(self, name) -> Player:
         player = Player(name, self.color_list[len(self.player_list)])
@@ -58,7 +59,7 @@ class Wackronyms:
         else:
             raise Exception(f"Already at max number of prompts - {num_prompts}.")
     
-    def advance_stage(self):
+    def advance_game(self):
         self.stage_counter += 1
 
         self.current_stage = ((self.current_stage + 1) % len(STAGES))
@@ -82,5 +83,10 @@ class Wackronyms:
             self.letters += letter
         return self.letters
     
-    def add_response(player: Player, response: str):
-        pass
+    def add_response(self, player: Player, response: str) -> None:
+        self.responses = {} # {0: [{"player": "Marcus", "response": "My Wackronym"},... ]}
+        if self.current_round not in self.responses:
+            self.responses[self.current_round] = []
+        
+        self.responses[self.current_round].append({"player": {player},
+                                                   "response": {response}})

@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 @app.route("/", methods=["GET", "POST"])
 @app.route("/player", methods=["GET", "POST"])
+@app.route("/guest", methods=["GET", "POST"])
 @app.route("/lobby", methods=["GET", "POST"])
 def lobby():
     global wackronyms
@@ -23,7 +24,7 @@ def lobby():
             return render_template("get_name_form.html", title="Add player", error="Somebody already picked that one.")
         player = wackronyms.add_player(name)
         socketio.emit('update_list', {'player_list': wackronyms.serialize_player_list()}, namespace='/host')
-        return render_template("lobby.html", title="Lobby", player=player)
+        return render_template("guest.html", title="Lobby", player=player)
 
     return render_template("get_name_form.html", title="Add player")
 
@@ -32,17 +33,23 @@ def host():
     global wackronyms
     return render_template("host.html", player_names=wackronyms.serialize_player_list(), prompt_list=wackronyms.prompt_list)
 
+@app.route("/start_game", methods=["GET"])
+def start_game():
+    wackronyms.start_game()
+    letters = wackronyms.get_random_string()
+    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/host')
+    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/player')
+    return "Game started"
+
 @app.route("/advance_game", methods=["GET"])
 def advance_game():
-    wackronyms.advance_stage()
+    wackronyms.advance_game()
     letters = wackronyms.get_random_string()
     
-
     socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/host')
-    
     socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/player')
 
-    return "Game started"
+    return "Game advanced"
 
 @socketio.on('connect', namespace='/host')
 def connect_host():
@@ -88,7 +95,7 @@ def response():
     player = wackronyms.get_player(player_name)
     if player and response:
         wackronyms.add_response(player, response)
-        socketio.emit('update_response', {'response_list': tbd}, namespace='/host')
+    logging.debug('Prompt submitted')
     return jsonify({'message': 'Prompt submitted'})
 
 if __name__ == '__main__':

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+        <title>Guest</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script> 
+            var playerName = "{{ player.name }}";
+            var playerColor = "{{ player.color.hex_key}}"
+        </script>
+        <script src="{{ url_for('static', filename='js/lobby.js') }}"></script>
+        <style>
+            #lobbyElements {
+                display: block;
+            }
+            #startGameButton {
+                display: none;
+            }
+            #responseElements {
+                display: none;
+            }
+            #voteElements {
+                display: none;
+            }
+            #revealElements {
+                display: none;
+            }
+            #scoreElements {
+                display: none;
+            }
+        </style>
+  </head>
+    <body>
+        <div id="lobbyElements">
+
+            <p>Welcome to Wackronyms,<span style="color: {{player.color.hex_key}}"> {{ player.name }}</span></p>
+
+            <!-- Create a modal for prompt entry -->
+            <div id="promptEntryModal" class="modal">
+                <div class="modal-content">
+                    <h2>Enter Prompts</h2>
+                    <form id="promptForm">
+                        <input type="text" id="promptInput" placeholder="Enter a prompt">
+                        <button type="button" id="addPromptButton">Add Prompt</button>
+                    </form>
+                    <div id="promptList">
+                        <br>
+                        <!-- Display the entered prompts here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="startGameButton">
+                <button id="startGameButton">Start Game</button>
+            </div>
+        </div>
+
+        <div id="responseElements">
+            <div id="stageElement">
+                <br>
+
+            </div>
+            <div id="promptElement">
+                <br>
+
+            </div>
+            <div id="lettersElement">
+                <br>
+
+            </div>
+            <div id="responseModal" class="modal">
+                <div class="modal-content">
+                    <h2>Enter Response</h2>
+                    <form id="responseForm">
+                        <input type="text" id="responseInput" placeholder="Submit a response">
+                        <button type="button" id="submitResponseButton">Submit Response</button>
+                    </form>
+                </div>
+            </div>
+            <div id="submittedResponse">
+                <br>
+            </div>
+        </div>
+
+        <div id = voteElements>
+            
+        </div>
+
+        <div id = revealElements>
+            
+        </div>
+
+        <div id = scoreElements>
+            
+        </div>
+
+    </body>
+</html>
