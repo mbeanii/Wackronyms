@@ -14,7 +14,6 @@ function setStageVisibility(currentStage) {
         const element = document.getElementById(elementId);
         if (element) {
             element.style.display = "none";
-            console.log("hid " + element.textContent);
         }
     }
 
@@ -23,7 +22,6 @@ function setStageVisibility(currentStage) {
     const currentElement = document.getElementById(currentElementId);
     if (currentElement) {
         currentElement.style.display = "block";
-        console.log("showed " + element.textContent);
     }
 }
 
@@ -48,7 +46,6 @@ function addResponse(responseText) {
     $("#submittedResponse").append(responseItem);
 
     $("#responseModal").hide()
-    console.log("hid responseModal")
 }
 
 function wordsBegintWithCorrectLetters(words, letters){
@@ -70,7 +67,6 @@ function start_game(){
             if (responseText) {
                 $.get("/letters", function(data) {
                     var letters = data["letters"];
-                    console.log("letters:", letters);
                     var words = responseText.split(" ")
                     var wordCount = words.length;
                     var lettersCount = letters.length
@@ -108,7 +104,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
       
     socket.on('transition', function(data) {
-        console.log('Received update:', data);
         var stage = data.stage;
         var prompt = data.prompt;
         var letters = data.letters;

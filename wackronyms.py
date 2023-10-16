@@ -78,7 +78,7 @@ class Wackronyms:
         if length <= 0:
             raise ValueError(f"Please provide an integer length argument of 1 or more.")
         self.letters = ''
-        for i in range(length):
+        for _ in range(length):
             letter = get_weighted_random_letter()
             self.letters += letter
         return self.letters

@@ -95,7 +95,6 @@ def response():
     player = wackronyms.get_player(player_name)
     if player and response:
         wackronyms.add_response(player, response)
-    logging.debug('Prompt submitted')
     return jsonify({'message': 'Prompt submitted'})
 
 if __name__ == '__main__':
