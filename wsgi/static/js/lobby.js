@@ -14,6 +14,7 @@ function setStageVisibility(currentStage) {
         const element = document.getElementById(elementId);
         if (element) {
             element.style.display = "none";
+            console.log("hid " + element.textContent);
         }
     }
 
@@ -22,18 +23,18 @@ function setStageVisibility(currentStage) {
     const currentElement = document.getElementById(currentElementId);
     if (currentElement) {
         currentElement.style.display = "block";
+        console.log("showed " + element.textContent);
     }
 }
 
 function addResponseModal() {
-    var responseModal = document.getElementById("responseModal")
-    responseModal.style.display = "block";
+    $("#responseModal").show()
 }
 
 function addPrompt(promptText) {
     var promptItem = document.createElement("div");
     promptItem.textContent = promptText;
-    $("#promptListElement").append(promptItem);
+    $("#promptList").append(promptItem);
 }
 
 function addResponse(responseText) {
@@ -46,8 +47,8 @@ function addResponse(responseText) {
     responseItem.textContent = responseText;
     $("#submittedResponse").append(responseItem);
 
-    var responseModal = document.getElementById("responseModal");
-    responseModal.style.display = "none";
+    $("#responseModal").hide()
+    console.log("hid responseModal")
 }
 
 function wordsBegintWithCorrectLetters(words, letters){
@@ -137,20 +138,18 @@ document.addEventListener("DOMContentLoaded", function() {
             $.get("/num_prompts", function(data) {
                 var numPrompts = data["num_prompts"];
                 var maxPrompts = data["max_prompts"];
-                console.log("Number of prompts:", numPrompts);
-                console.log("Maximum prompts:", maxPrompts);
     
                 if (numPrompts < maxPrompts) {
                     addPrompt(promptText);
                     prompt_list.push(promptText);
-                    $("#promptInput").value = "";
+                    $("#promptInput").val("");
                     $.post("/submit_prompt", { player_name: playerName, prompt: promptText }, function(data) {
                         $("#promptInput").value = "";
+                        if (numPrompts == maxPrompts - 1){
+                            $("#promptEntryModal").hide();
+                            $("#startGameElement").show();
+                        }
                     });
-                    if (numPrompts == maxPrompts - 1){
-                        promptEntryModal.style.display = "none";
-                        $("#startGameButton").style.display = "block";
-                    }
                 } else {
                     var message = "You can enter only " + maxPrompts + " prompts.";
                     alert(message);
