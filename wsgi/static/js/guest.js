@@ -94,6 +94,31 @@ function start_game(){
     });
 }
 
+function transitionToResponse(data){
+    var stage = data.stage;
+    var prompt = data.prompt;
+    var letters = data.letters;
+
+    $("#stageElement").text(stage);
+    $("#promptElement").text(prompt);
+    $("#lettersElement").text(letters);
+    $("#lettersElement").css("color", playerColor);
+}
+
+function transitionToVote(data){
+    var stage = data.stage;
+
+    $("#voteStageElement").text(stage);
+    $("#voteStageElement").css("color", playerColor);
+}
+
+function transitionToReveal(data){
+    console.log("Not implemented")
+}
+
+function transitionToScore(data){
+    console.log("Not implemented")
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     // Websocket connection
@@ -105,21 +130,17 @@ document.addEventListener("DOMContentLoaded", function() {
       
     socket.on('transition', function(data) {
         var stage = data.stage;
-        var prompt = data.prompt;
-        var letters = data.letters;
+        setStageVisibility(stage);
 
-        setStageVisibility(stage)
-
-        // Response stage
-        var stageElement = document.getElementById("stageElement");
-        stageElement.textContent = stage;
-
-        var promptElement = document.getElementById("promptElement");
-        promptElement.textContent = prompt;
-
-        var lettersElement = document.getElementById("lettersElement");
-        lettersElement.textContent = letters;
-        lettersElement.style.color = playerColor;
+        if(stage == "response"){
+            transitionToResponse(data);
+        } else if(stage == "vote"){
+            transitionToVote(data);
+        } else if(stage == "reveal"){
+            transitionToReveal(data);
+        } else if (stage == "score"){
+            transitionToScore(data);
+        }
     });
 
     $("#startGameButton").click(function() {

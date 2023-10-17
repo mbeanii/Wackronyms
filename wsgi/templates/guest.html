@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+    <head>
         <title>Guest</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -8,7 +8,7 @@
             var playerName = "{{ player.name }}";
             var playerColor = "{{ player.color.hex_key}}"
         </script>
-        <script src="{{ url_for('static', filename='js/lobby.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/guest.js') }}"></script>
         <style>
             #lobbyElements {
                 display: block;
@@ -29,7 +29,7 @@
                 display: none;
             }
         </style>
-  </head>
+    </head>
     <body>
         <div id="lobbyElements">
 
@@ -58,16 +58,16 @@
         <div id="responseElements">
             <div id="stageElement">
                 <br>
-
             </div>
+
             <div id="promptElement">
                 <br>
-
             </div>
+
             <div id="lettersElement">
                 <br>
-
             </div>
+
             <div id="responseModal" class="modal">
                 <div class="modal-content">
                     <h2>Enter Response</h2>
@@ -83,15 +83,15 @@
         </div>
 
         <div id = voteElements>
-            
+            <div id="voteStageElement">
+                <br>
+            </div>
         </div>
 
         <div id = revealElements>
-            
         </div>
 
         <div id = scoreElements>
-            
         </div>
 
     </body>

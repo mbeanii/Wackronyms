@@ -9,6 +9,40 @@ socketio = SocketIO(app)
 wackronyms = Wackronyms()
 logging.basicConfig(level=logging.DEBUG)
 
+class DeployStage:
+    """Example use: DeployStage("response").deploy()"""
+
+    def __init__(self, stage: str) -> None:
+        deploy_function_map = {
+            "response": self._deploy_response,
+            "vote": self._deploy_vote,
+            "reveal": self._deploy_reveal,
+            "score": self._deploy_score
+            }
+        self.advance_function = deploy_function_map[stage]
+
+    @staticmethod
+    def _deploy_response():
+        letters = wackronyms.get_random_string()
+        socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/host')
+        socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/player')
+
+    @staticmethod
+    def _deploy_vote():
+        socketio.emit('transition', {'stage': wackronyms.current_stage}, namespace='/host')
+        socketio.emit('transition', {'stage': wackronyms.current_stage}, namespace='/player')
+
+    @staticmethod
+    def _deploy_reveal():
+        raise Exception("Not Implemented")
+
+    @staticmethod
+    def _deploy_score():
+        raise Exception("Not Implemented")
+
+    def deploy(self):
+        self.advance_function()
+
 @app.route("/", methods=["GET", "POST"])
 @app.route("/player", methods=["GET", "POST"])
 @app.route("/guest", methods=["GET", "POST"])
@@ -44,11 +78,7 @@ def start_game():
 @app.route("/advance_game", methods=["GET"])
 def advance_game():
     wackronyms.advance_game()
-    letters = wackronyms.get_random_string()
-    
-    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/host')
-    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/player')
-
+    DeployStage(wackronyms.current_stage).deploy()
     return "Game advanced"
 
 @socketio.on('connect', namespace='/host')
@@ -95,6 +125,8 @@ def response():
     player = wackronyms.get_player(player_name)
     if player and response:
         wackronyms.add_response(player, response)
+        if wackronyms.all_players_in():
+            advance_game()
     return jsonify({'message': 'Prompt submitted'})
 
 if __name__ == '__main__':

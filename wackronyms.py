@@ -62,7 +62,7 @@ class Wackronyms:
     def advance_game(self):
         self.stage_counter += 1
 
-        self.current_stage = ((self.current_stage + 1) % len(STAGES))
+        self.current_stage = ((self.stage_counter + 1) % len(STAGES))
         if self.current_stage == 0:
             self.current_round += 1
         
@@ -84,9 +84,15 @@ class Wackronyms:
         return self.letters
     
     def add_response(self, player: Player, response: str) -> None:
-        self.responses = {} # {0: [{"player": "Marcus", "response": "My Wackronym"},... ]}
-        if self.current_round not in self.responses:
+        self.responses = {} # {0: [{"player": "Marcus", "response": "My Wackronym", "isFirst": True, "points": 1},... ]}
+        is_first = self.current_round not in self.responses
+        if is_first:
             self.responses[self.current_round] = []
         
         self.responses[self.current_round].append({"player": {player},
-                                                   "response": {response}})
+                                                   "response": {response},
+                                                   "isFirst": is_first,
+                                                   "points": int(is_first)})
+    
+    def all_players_in(self) -> bool:
+        return (len(self.responses[self.current_round]) == len(self.player_list))

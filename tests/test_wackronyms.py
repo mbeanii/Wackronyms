@@ -35,5 +35,3 @@ class TestWackronyms:
         assert self.wackronyms.current_round == 2
         assert self.wackronyms.current_stage == "response"
         self.wackronyms.advance_game()
-
-
