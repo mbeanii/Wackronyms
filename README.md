@@ -1,4 +1,4 @@
-Wackronyms is a party-style word game for up 3-6 players.
+Wackronyms is a party-style word game for 3-6 players.
 
 To run:
 1) Activate the virtual environment venv
