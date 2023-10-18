@@ -28,8 +28,8 @@ X `- Prompts – players enter prompts while waiting in the lobby
 X `- Interface with keyboard to enter responses and display/edit them on the screen
 X   `- The web browser should handle this
 X   `- We'll just need to be able to process the browser inputs (probably a javascript job)
-`- Submit button
-`- Bonus point for first submission
+X `- Submit button
+X `- Bonus point for first submission
 `- Round timer
 `- Read each response one by one (random order)
   `- Black text

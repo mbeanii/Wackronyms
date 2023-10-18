@@ -20,8 +20,8 @@ function setStageVisibility(currentStage) {
     const currentElement = document.getElementById(currentElementId);
     if (currentElement) {
         currentElement.style.display = "block";
-    }
-}
+    };
+};
 
 function transitionToResponse(data){
     var stage = data.stage;
@@ -31,21 +31,32 @@ function transitionToResponse(data){
     $("#stageElement").text(stage);
     $("#promptElement").text(prompt);
     $("#lettersElement").text(letters);
-}
+};
 
 function transitionToVote(data){
     var stage = data.stage;
+    var responses = data.responses;
+    console.log(responses)
 
     $("#voteStageElement").text(stage);
-}
+    $.each(responses, function(index, response) {
+        var radioButton = '<label>' +
+        '<input type="radio" name="responseOption" value="' + response + '">' +
+            response +
+           '</label><br>';
+        $('#radioMenu').append(radioButton);
+    });
+
+    // To get selected value: var selectedValue = $("input[name='responseOption']:checked").val();
+};
 
 function transitionToReveal(data){
-    console.log("Not implemented")
-}
+    console.log("Not implemented");
+};
 
 function transitionToScore(data){
-    console.log("Not implemented")
-}
+    console.log("Not implemented");
+};
 
 // Define the function to format the player list
 function formatPlayerList(data) {

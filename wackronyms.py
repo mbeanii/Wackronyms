@@ -1,7 +1,7 @@
 import json
 from player import Player, Color
 from randomLetter import get_weighted_random_letter
-from random import randint
+from random import randint, shuffle
 from paths import COLOR_CONFIG_PATH
 from globals import MAX_PROMPTS, STAGES
 from typing import List
@@ -33,7 +33,7 @@ class Wackronyms:
         self.current_round = 0
         self.stage_counter = 0
         self.current_stage = "lobby"
-        letters = None
+        self.letters = None
         self.responses = {} # {0: [{"player": "Marcus", "response": "My Wackronym"},... ]}
 
     def add_player(self, name) -> Player:
@@ -63,7 +63,7 @@ class Wackronyms:
         self.stage_counter += 1
 
         self.current_stage = ((self.stage_counter + 1) % len(STAGES))
-        if self.current_stage == 0:
+        if self.stage_counter == 0:
             self.current_round += 1
         
         self.current_stage = self.stages[self.stage_counter]
@@ -84,15 +84,23 @@ class Wackronyms:
         return self.letters
     
     def add_response(self, player: Player, response: str) -> None:
-        self.responses = {} # {0: [{"player": "Marcus", "response": "My Wackronym", "isFirst": True, "points": 1},... ]}
         is_first = self.current_round not in self.responses
-        if is_first:
+        if self.current_round not in self.responses:
             self.responses[self.current_round] = []
         
-        self.responses[self.current_round].append({"player": {player},
-                                                   "response": {response},
+        self.responses[self.current_round].append({"player": player,
+                                                   "response": response,
                                                    "isFirst": is_first,
-                                                   "points": int(is_first)})
+                                                   "points": int(is_first),
+                                                   "votes": 0})
+        
+    def randomize_responses(self) -> List[str]:
+        response_string_list = []
+        for response in self.responses[self.current_round]:
+            response_string_list.append(response.get("response"))
+        shuffle(response_string_list)
+        print(response_string_list)
+        return response_string_list
     
     def all_players_in(self) -> bool:
         return (len(self.responses[self.current_round]) == len(self.player_list))
