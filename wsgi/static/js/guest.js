@@ -189,6 +189,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     $("#submitVoteButton").click(function() {
         var selectedResponse = $("input[name='responseOption']:checked").val();
-        $.post("/vote", {selected_response: selectedResponse}, function(data){});
+        $.post("/vote", {selected_response: selectedResponse}, function(){
+            $("#voteStageElement").hide()
+            $("#radioMenu").hide()
+            $("#submitVoteButton").hide()
+            $("#thanksForVoting").text("Thanks for voting!")
+        });
     });
 });

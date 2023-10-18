@@ -58,7 +58,7 @@ class TestWackronyms:
 
     def test_get_response_by_response_string(self):
         self.wackronyms.add_response(self.player1, self.response_string1)
-        response = self.wackronyms.get_response_by_response_string(self.response_string1)
+        response = self.wackronyms.get_response(self.response_string1)
 
         assert response == {"player": self.player1,
                             "response": self.response_string1,
@@ -68,7 +68,7 @@ class TestWackronyms:
 
     def test_vote_for_response(self):
         self.wackronyms.add_response(self.player2, self.response_string2)
-        response = self.wackronyms.get_response_by_response_string(self.response_string2)
+        response = self.wackronyms.get_response(self.response_string2)
         points_before = response["points"]
         self.wackronyms.vote_for_response(self.response_string2)
         points_after = response["points"]

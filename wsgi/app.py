@@ -137,7 +137,7 @@ def vote():
     wackronyms.vote_for_response(selected_response)
 
     # If all players have voted, transition.
-    return jsonify(data)
+    return jsonify({'message': 'Vote submitted'})
 
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", debug=True)

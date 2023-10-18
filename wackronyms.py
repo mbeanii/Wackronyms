@@ -34,7 +34,7 @@ class Wackronyms:
         self.stage_counter = 0
         self.current_stage = "lobby"
         self.letters = None
-        self.responses = {} # {0: [{"player": "Marcus", "response": "My Wackronym"},... ]}
+        self.responses = {}
 
     def add_player(self, name) -> Player:
         player = Player(name, self.color_list[len(self.player_list)])
@@ -101,14 +101,14 @@ class Wackronyms:
         shuffle(response_string_list)
         return response_string_list
     
-    def get_response_by_response_string(self, response_string: str) -> dict:
+    def get_response(self, response_string: str) -> dict:
         for response in self.responses[self.current_round]:
             if response["response"] == response_string:
                 return response
         raise Exception("Response not found")
     
     def vote_for_response(self, selected_response: str) -> None:
-        response = self.get_response_by_response_string(selected_response)
+        response = self.get_response(selected_response)
         response["votes"] += 1
         response["points"] += 1
     
