@@ -36,7 +36,6 @@ function transitionToResponse(data){
 function transitionToVote(data){
     var stage = data.stage;
     var responses = data.responses;
-    console.log(responses)
 
     $("#voteStageElement").text(stage);
     $.each(responses, function(index, response) {

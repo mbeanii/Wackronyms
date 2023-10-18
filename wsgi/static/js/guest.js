@@ -107,9 +107,19 @@ function transitionToResponse(data){
 
 function transitionToVote(data){
     var stage = data.stage;
+    var responses = data.responses;
 
     $("#voteStageElement").text(stage);
     $("#voteStageElement").css("color", playerColor);
+
+    $("#voteStageElement").text(stage);
+    $.each(responses, function(index, response) {
+        var radioButton = '<label>' +
+        '<input type="radio" name="responseOption" value="' + response + '">' +
+            response +
+           '</label><br>';
+        $('#radioMenu').append(radioButton);
+    });
 }
 
 function transitionToReveal(data){
