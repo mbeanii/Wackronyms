@@ -35,6 +35,7 @@ class Wackronyms:
         self.current_stage = "lobby"
         self.letters = None
         self.responses = {}
+        self.num_votes_this_round = 0
 
     def add_player(self, name) -> Player:
         player = Player(name, self.color_list[len(self.player_list)])
@@ -65,6 +66,7 @@ class Wackronyms:
         self.stage_counter = ((self.stage_counter) % len(STAGES))
         if self.stage_counter == 0:
             self.current_round += 1
+            self.num_votes_this_round = 0
         
         self.current_stage = self.stages[self.stage_counter]
 
@@ -111,6 +113,7 @@ class Wackronyms:
         response = self.get_response(selected_response)
         response["votes"] += 1
         response["points"] += 1
+        self.num_votes_this_round += 1
     
     def all_players_in(self) -> bool:
         return (len(self.responses[self.current_round]) == len(self.player_list))

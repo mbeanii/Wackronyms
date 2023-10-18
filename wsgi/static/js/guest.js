@@ -190,10 +190,10 @@ document.addEventListener("DOMContentLoaded", function() {
     $("#submitVoteButton").click(function() {
         var selectedResponse = $("input[name='responseOption']:checked").val();
         $.post("/vote", {selected_response: selectedResponse}, function(){
-            $("#voteStageElement").hide()
-            $("#radioMenu").hide()
-            $("#submitVoteButton").hide()
-            $("#thanksForVoting").text("Thanks for voting!")
         });
+        $("#voteStageElement").hide();
+        $("#radioMenu").hide();
+        $("#submitVoteButton").hide();
+        $("#thanksForVoting").text("Thanks for voting!");
     });
 });

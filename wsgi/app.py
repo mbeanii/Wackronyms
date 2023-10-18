@@ -136,7 +136,9 @@ def vote():
     selected_response = request.form.get("selected_response")
     wackronyms.vote_for_response(selected_response)
 
-    # If all players have voted, transition.
+    num_players = len(wackronyms.player_list)
+    if num_players == wackronyms.num_votes_this_round:
+            advance_game()
     return jsonify({'message': 'Vote submitted'})
 
 if __name__ == '__main__':
