@@ -30,7 +30,6 @@ class DeployStage:
     @staticmethod
     def _deploy_vote():
         responses = wackronyms.randomize_responses()
-        print(responses)
         socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses}, namespace='/host')
         socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses}, namespace='/player')
 

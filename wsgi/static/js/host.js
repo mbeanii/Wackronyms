@@ -39,14 +39,9 @@ function transitionToVote(data){
 
     $("#voteStageElement").text(stage);
     $.each(responses, function(index, response) {
-        var radioButton = '<label>' +
-        '<input type="radio" name="responseOption" value="' + response + '">' +
-            response +
-           '</label><br>';
-        $('#radioMenu').append(radioButton);
+        var listItem = '<li>' + response + '</li>';
+        $('#responseList').append(listItem);
     });
-
-    // To get selected value: var selectedValue = $("input[name='responseOption']:checked").val();
 };
 
 function transitionToReveal(data){

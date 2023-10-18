@@ -99,7 +99,6 @@ class Wackronyms:
         for response in self.responses[self.current_round]:
             response_string_list.append(response.get("response"))
         shuffle(response_string_list)
-        print(response_string_list)
         return response_string_list
     
     def all_players_in(self) -> bool:
