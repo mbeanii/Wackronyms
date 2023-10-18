@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     addPrompt(promptText);
                     prompt_list.push(promptText);
                     $("#promptInput").val("");
-                    $.post("/submit_prompt", { player_name: playerName, prompt: promptText }, function(data) {
+                    $.post("/submit_prompt", { player_name: playerName, prompt: promptText }, function() {
                         $("#promptInput").value = "";
                         if (numPrompts == maxPrompts - 1){
                             $("#promptEntryModal").hide();
@@ -185,5 +185,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error("Failed to retrieve data from /num_prompts");
             });
         }
+    });
+
+    $("#submitVoteButton").click(function() {
+        var selectedResponse = $("input[name='responseOption']:checked").val();
+        $.post("/vote", {selected_response: selectedResponse}, function(data){});
     });
 });

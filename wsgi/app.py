@@ -130,5 +130,14 @@ def response():
             advance_game()
     return jsonify({'message': 'Prompt submitted'})
 
+@app.route("/vote", methods=["POST"])
+def vote():
+    global wackronyms
+    selected_response = request.form.get("selected_response")
+    wackronyms.vote_for_response(selected_response)
+
+    # If all players have voted, transition.
+    return jsonify(data)
+
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", debug=True)

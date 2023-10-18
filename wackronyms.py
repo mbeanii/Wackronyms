@@ -62,7 +62,7 @@ class Wackronyms:
     def advance_game(self):
         self.stage_counter += 1
 
-        self.current_stage = ((self.stage_counter + 1) % len(STAGES))
+        self.stage_counter = ((self.stage_counter) % len(STAGES))
         if self.stage_counter == 0:
             self.current_round += 1
         
@@ -100,6 +100,9 @@ class Wackronyms:
             response_string_list.append(response.get("response"))
         shuffle(response_string_list)
         return response_string_list
+    
+    def vote_for_response(self, selected_response: str) -> None:
+        pass
     
     def all_players_in(self) -> bool:
         return (len(self.responses[self.current_round]) == len(self.player_list))
