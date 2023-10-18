@@ -101,8 +101,16 @@ class Wackronyms:
         shuffle(response_string_list)
         return response_string_list
     
+    def get_response_by_response_string(self, response_string: str) -> dict:
+        for response in self.responses[self.current_round]:
+            if response["response"] == response_string:
+                return response
+        raise Exception("Response not found")
+    
     def vote_for_response(self, selected_response: str) -> None:
-        pass
+        response = self.get_response_by_response_string(selected_response)
+        response["votes"] += 1
+        response["points"] += 1
     
     def all_players_in(self) -> bool:
         return (len(self.responses[self.current_round]) == len(self.player_list))
