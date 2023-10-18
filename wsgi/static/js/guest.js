@@ -1,4 +1,5 @@
-var prompt_list = [];
+var promptList = [];
+var responseText = ""
 const stageElements = {
     "lobby": "lobbyElements",
     "response": "responseElements",
@@ -63,7 +64,7 @@ function start_game(){
     $.get("/start_game", function(data) {
         addResponseModal();
         $("#submitResponseButton").click(function() {
-            var responseText = responseInput.value.trim();
+            responseText = responseInput.value.trim();
             if (responseText) {
                 $.get("/letters", function(data) {
                     var letters = data["letters"];
@@ -103,7 +104,7 @@ function transitionToResponse(data){
     $("#promptElement").text(prompt);
     $("#lettersElement").text(letters);
     $("#lettersElement").css("color", playerColor);
-}
+};
 
 function transitionToVote(data){
     var stage = data.stage;
@@ -114,17 +115,19 @@ function transitionToVote(data){
 
     $("#voteStageElement").text(stage);
     $.each(responses, function(index, response) {
+        if (response != responseText){
         var radioButton = '<label>' +
         '<input type="radio" name="responseOption" value="' + response + '">' +
             response +
            '</label><br>';
         $('#radioMenu').append(radioButton);
+        };
     });
-}
+};
 
 function transitionToReveal(data){
     console.log("Not implemented")
-}
+};
 
 function transitionToScore(data){
     console.log("Not implemented")
@@ -167,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
                 if (numPrompts < maxPrompts) {
                     addPrompt(promptText);
-                    prompt_list.push(promptText);
+                    promptList.push(promptText);
                     $("#promptInput").val("");
                     $.post("/submit_prompt", { player_name: playerName, prompt: promptText }, function() {
                         $("#promptInput").value = "";
@@ -189,11 +192,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     $("#submitVoteButton").click(function() {
         var selectedResponse = $("input[name='responseOption']:checked").val();
-        $.post("/vote", {selected_response: selectedResponse}, function(){
-        });
-        $("#voteStageElement").hide();
-        $("#radioMenu").hide();
-        $("#submitVoteButton").hide();
-        $("#thanksForVoting").text("Thanks for voting!");
+        if(selectedResponse){
+            $.post("/vote", {selected_response: selectedResponse}, function(){
+            });
+            $("#voteStageElement").hide();
+            $("#radioMenu").hide();
+            $("#submitVoteButton").hide();
+            $("#thanksForVoting").text("Thanks for voting!");
+        };
     });
 });
