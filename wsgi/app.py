@@ -96,10 +96,17 @@ def submit_prompt():
     player_name = request.form.get("player_name")
     prompt = request.form.get("prompt")
     player = wackronyms.get_player(player_name)
-    if player and prompt:
+
+    if len(wackronyms.prompt_list) < MAX_PROMPTS:
         wackronyms.add_prompt(player, prompt)
         socketio.emit('update_prompts', {'prompt_list': wackronyms.prompt_list}, namespace='/host')
-    return jsonify({'message': 'Prompt submitted'})
+    else:
+        return jsonify({'prompt_added': False})
+    
+    if len(wackronyms.prompt_list) == MAX_PROMPTS:
+        socketio.emit('hide_prompts', namespace='/player')
+
+    return jsonify({'prompt_added': True})
 
 @app.route("/num_prompts", methods=["GET"])
 def get_num_prompts():

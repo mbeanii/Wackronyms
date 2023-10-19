@@ -26,10 +26,6 @@ function setStageVisibility(currentStage) {
     }
 }
 
-function addResponseModal() {
-    $("#responseModal").show()
-}
-
 function addPrompt(promptText) {
     var promptItem = document.createElement("div");
     promptItem.textContent = promptText;
@@ -61,38 +57,7 @@ function wordsBegintWithCorrectLetters(words, letters){
 }
 
 function start_game(){
-    $.get("/start_game", function(data) {
-        addResponseModal();
-        $("#submitResponseButton").click(function() {
-            responseText = responseInput.value.trim();
-            if (responseText) {
-                $.get("/letters", function(data) {
-                    var letters = data["letters"];
-                    var words = responseText.split(" ")
-                    var wordCount = words.length;
-                    var lettersCount = letters.length
-    
-                    if (wordCount == lettersCount) {
-                        if (wordsBegintWithCorrectLetters(words, letters) == true) {
-                            addResponse(responseText);
-                            $.post("/response", { player_name: playerName, response: responseText }, function(data) {
-                                responseInput.value = "";
-                            });
-                        } else {
-                            var message = 'Each word in your response should begin with each letter in "' + letters + '"';
-                            alert(message);
-                        }
-                    } else {
-                        var message = "Your response needs to be " + lettersCount + " words long.";
-                        alert(message);
-                    }
-                })
-                .fail(function() {
-                    console.error("Failed to retrieve data from /letters");
-                });
-            }
-        });        
-    });
+    $.get("/start_game", function() {});
 }
 
 function transitionToResponse(data){
@@ -133,6 +98,11 @@ function transitionToScore(data){
     console.log("Not implemented")
 }
 
+function togglePromptAndStartGameButtons() {
+    $("#promptEntryModal").hide();
+    $("#startGameElement").show();
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     // Websocket connection
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/player');
@@ -164,31 +134,53 @@ document.addEventListener("DOMContentLoaded", function() {
         var promptText = $("#promptInput").val().trim();
     
         if (promptText) {
-            $.get("/num_prompts", function(data) {
-                var numPrompts = data["num_prompts"];
-                var maxPrompts = data["max_prompts"];
-    
-                if (numPrompts < maxPrompts) {
+            $.post("/submit_prompt", { prompt: promptText, player_name: playerName }, function(data) {
+                var promptAdded = data["prompt_added"];
+                if (promptAdded) {
                     addPrompt(promptText);
                     promptList.push(promptText);
                     $("#promptInput").val("");
-                    $.post("/submit_prompt", { player_name: playerName, prompt: promptText }, function() {
-                        $("#promptInput").value = "";
-                        if (numPrompts == maxPrompts - 1){
-                            $("#promptEntryModal").hide();
-                            $("#startGameElement").show();
-                        }
-                    });
                 } else {
                     var message = "You can enter only " + maxPrompts + " prompts.";
                     alert(message);
                 }
             })
             .fail(function() {
-                console.error("Failed to retrieve data from /num_prompts");
+                console.error("Failed to retrieve data from /submit_prompt");
             });
         }
     });
+
+
+    $("#submitResponseButton").click(function() {
+        responseText = responseInput.value.trim();
+        if (responseText) {
+            $.get("/letters", function(data) {
+                var letters = data["letters"];
+                var words = responseText.split(" ")
+                var wordCount = words.length;
+                var lettersCount = letters.length
+
+                if (wordCount == lettersCount) {
+                    if (wordsBegintWithCorrectLetters(words, letters) == true) {
+                        addResponse(responseText);
+                        $.post("/response", { player_name: playerName, response: responseText }, function(data) {
+                            responseInput.value = "";
+                        });
+                    } else {
+                        var message = 'Each word in your response should begin with each letter in "' + letters + '"';
+                        alert(message);
+                    }
+                } else {
+                    var message = "Your response needs to be " + lettersCount + " words long.";
+                    alert(message);
+                }
+            })
+            .fail(function() {
+                console.error("Failed to retrieve data from /letters");
+            });
+        }
+    });     
 
     $("#submitVoteButton").click(function() {
         var selectedResponse = $("input[name='responseOption']:checked").val();
@@ -200,5 +192,9 @@ document.addEventListener("DOMContentLoaded", function() {
             $("#submitVoteButton").hide();
             $("#thanksForVoting").text("Thanks for voting!");
         };
+    });
+
+    socket.on('hide_prompts', function() {
+            togglePromptAndStartGameButtons();
     });
 });
