@@ -73,13 +73,13 @@ function transitionToResponse(data){
 
 function transitionToVote(data){
     var stage = data.stage;
-    var responses = data.responses;
+    var response_strings = data.response_strings;
 
     $("#voteStageElement").text(stage);
     $("#voteStageElement").css("color", playerColor);
 
     $("#voteStageElement").text(stage);
-    $.each(responses, function(index, response) {
+    $.each(response_strings, function(index, response) {
         if (response != responseText){
         var radioButton = '<label>' +
         '<input type="radio" name="responseOption" value="' + response + '">' +
@@ -91,7 +91,6 @@ function transitionToVote(data){
 };
 
 function transitionToReveal(data){
-    console.log("Not implemented")
 };
 
 function transitionToScore(data){
@@ -185,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function() {
     $("#submitVoteButton").click(function() {
         var selectedResponse = $("input[name='responseOption']:checked").val();
         if(selectedResponse){
-            $.post("/vote", {selected_response: selectedResponse}, function(){
+            $.post("/vote", {selected_response: selectedResponse, player_name: playerName}, function(){
             });
             $("#voteStageElement").hide();
             $("#radioMenu").hide();

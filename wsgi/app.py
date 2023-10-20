@@ -29,13 +29,15 @@ class DeployStage:
 
     @staticmethod
     def _deploy_vote():
-        responses = wackronyms.randomize_responses()
-        socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses}, namespace='/host')
-        socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses}, namespace='/player')
+        response_strings = wackronyms.get_response_strings_in_random_order()
+        socketio.emit('transition', {'stage': wackronyms.current_stage, 'response_strings': response_strings}, namespace='/host')
+        socketio.emit('transition', {'stage': wackronyms.current_stage, 'response_strings': response_strings}, namespace='/player')
 
     @staticmethod
     def _deploy_reveal():
-        raise Exception("Not Implemented")
+        responses = wackronyms.get_responses()
+        socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses}, namespace='/host')
+        socketio.emit('transition', {'stage': wackronyms.current_stage}, namespace='/player')
 
     @staticmethod
     def _deploy_score():
@@ -141,7 +143,8 @@ def response():
 def vote():
     global wackronyms
     selected_response = request.form.get("selected_response")
-    wackronyms.vote_for_response(selected_response)
+    player_name = request.form.get("player_name")
+    wackronyms.vote_for_response(selected_response, player_name)
 
     num_players = len(wackronyms.player_list)
     if num_players == wackronyms.num_votes_this_round:

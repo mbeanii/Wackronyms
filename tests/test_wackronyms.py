@@ -49,7 +49,7 @@ class TestWackronyms:
         self.wackronyms.advance_game()
         self.wackronyms.add_response(self.player1, self.response_string1)
         self.wackronyms.add_response(self.player2, self.response_string2)
-        responses = self.wackronyms.randomize_responses()
+        responses = self.wackronyms.get_response_strings_in_random_order()
         responses_set = set(responses)
         original = [response.get("response") for response in self.wackronyms.responses[self.wackronyms.current_round]]
         original_set = set(original)
@@ -64,14 +64,19 @@ class TestWackronyms:
                             "response": self.response_string1,
                             "isFirst": True,
                             "points": 1,
-                            "votes": 0}
+                            "votes": {
+                                    "players": [],
+                                    "number": 0
+                            }}
 
     def test_vote_for_response(self):
         self.wackronyms.add_response(self.player2, self.response_string2)
         response = self.wackronyms.get_response(self.response_string2)
         points_before = response["points"]
-        self.wackronyms.vote_for_response(self.response_string2)
+        self.wackronyms.vote_for_response(self.response_string2, self.player1.name)
         points_after = response["points"]
-        votes_after = response["votes"]
+        votes_after = response["votes"]["number"]
+        player_actual = response["votes"]["players"][0]["name"]
         assert points_after == points_before + 1
         assert votes_after == 1
+        assert player_actual == self.player1.name

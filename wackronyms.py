@@ -94,9 +94,12 @@ class Wackronyms:
                                                    "response": response,
                                                    "isFirst": is_first,
                                                    "points": int(is_first),
-                                                   "votes": 0})
+                                                   "votes": {
+                                                         "players": [],
+                                                         "number": 0
+                                                   }})
         
-    def randomize_responses(self) -> List[str]:
+    def get_response_strings_in_random_order(self) -> List[str]:
         response_string_list = []
         for response in self.responses[self.current_round]:
             response_string_list.append(response.get("response"))
@@ -109,9 +112,24 @@ class Wackronyms:
                 return response
         raise Exception("Response not found")
     
-    def vote_for_response(self, selected_response: str) -> None:
+    def get_responses(self) -> List[dict]:
+        serialized_responses = []
+        for response in self.responses[self.current_round]:
+            serialized_responses.append(
+                {
+                    "player": response["player"].to_dict(),
+                    "response": response["response"],
+                    "isFirst": response["isFirst"],
+                    "points": response["points"],
+                    "votes": response["votes"]
+                }
+            )
+        return serialized_responses
+    
+    def vote_for_response(self, selected_response: str, player_name) -> None:
         response = self.get_response(selected_response)
-        response["votes"] += 1
+        response["votes"]["players"].append(self.get_player(player_name).to_dict())
+        response["votes"]["number"] += 1
         response["points"] += 1
         self.num_votes_this_round += 1
     

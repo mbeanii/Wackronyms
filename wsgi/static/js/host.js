@@ -35,17 +35,64 @@ function transitionToResponse(data){
 
 function transitionToVote(data){
     var stage = data.stage;
-    var responses = data.responses;
+    var response_strings = data.response_strings;
 
     $("#voteStageElement").text(stage);
-    $.each(responses, function(index, response) {
+    $.each(response_strings, function(index, response) {
         var listItem = '<li>' + response + '</li>';
         $('#responseList').append(listItem);
     });
 };
 
-function transitionToReveal(data){
-    console.log("Not implemented");
+function add_reveal_response(player, response_string, votes, isWinner) {
+    var responseDiv = document.createElement('div');
+    
+    var playerSpan = document.createElement('span');
+    playerSpan.textContent = player.name + ": ";
+    playerSpan.style.color = player.color;
+    responseDiv.appendChild(playerSpan);
+    
+    var responseSpan = document.createElement('span');
+    responseSpan.textContent = response_string;
+    responseSpan.style.color = player.color;
+    responseDiv.appendChild(responseSpan);
+    
+    if (votes.number > 0) {
+        var pointsSpan = document.createElement('span');
+        pointsSpan.textContent = " (" + votes.number + " votes)";
+        pointsSpan.style.color = "gray";
+        responseDiv.appendChild(pointsSpan);
+
+        var votersSpan = document.createElement('span');
+        var voterNames = votes.players.map(function(voter) {
+            return voter.name;
+        });
+        votersSpan.textContent = " - voted by: " + voterNames.join(", ");
+        votersSpan.style.color = "gray";
+        responseDiv.appendChild(votersSpan);
+    }
+
+    responseDiv.style.fontWeight = isWinner ? "bold" : "normal";
+    
+    $("#revealResponseList").append(responseDiv);
+};
+
+function transitionToReveal(data) {
+    var stage = data.stage;
+    $("#revealStageElement").text(stage);
+
+    // Sort the responses by votes.number
+    data.responses.sort(function(a, b) {
+        return b.votes.number - a.votes.number;
+    });
+
+    for (let i = 0; i < data.responses.length; i++) {
+        const player = data.responses[i].player;
+        const response_string = data.responses[i].response;
+        const votes = data.responses[i].votes;
+        const isWinner = i == 0;
+        add_reveal_response(player, response_string, votes, isWinner);
+    };
 };
 
 function transitionToScore(data){
@@ -94,6 +141,7 @@ socket.on('update_list', function(data) {
 });
 
 socket.on('transition', function(data) {
+        console.log(data)
         var stage = data.stage;
         setStageVisibility(stage);
 

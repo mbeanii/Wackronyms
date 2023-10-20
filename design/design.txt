@@ -33,11 +33,11 @@ X `- Bonus point for first submission
 `- Round timer
 `- Read each response one by one (random order)
   `- Black text
-`- Display all responses at once for the vote
-  `- Black text
-  `- Prompt, “Tap your favorite response”
-  `- Highlight selection
-  `- Submit button
+X `- Display all responses at once for the vote
+X   `- Black text
+  `- Prompt, “Tap your favorite response” - done on guest; host needs 'look at your phone' rsumpin.
+X  `- Highlight selection
+X  `- Submit button
 `- Voting results screen
   `- Starts with all responses as in the voting screen
   `- “Votes” text above a number box in lower right-hand corner of each submission
