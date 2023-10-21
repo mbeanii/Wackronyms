@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error("Failed to retrieve data from /letters");
             });
         }
-    });     
+    });
 
     $("#submitVoteButton").click(function() {
         var selectedResponse = $("input[name='responseOption']:checked").val();
@@ -190,6 +190,13 @@ document.addEventListener("DOMContentLoaded", function() {
             $("#radioMenu").hide();
             $("#submitVoteButton").hide();
             $("#thanksForVoting").text("Thanks for voting!");
+        };
+    });
+
+    $("#advanceToScoreButton").click(function() {
+        var selectedResponse = $("input[name='responseOption']:checked").val();
+        if(selectedResponse){
+            $.get("/advance_game", function(){});
         };
     });
 
