@@ -81,6 +81,14 @@ function transitionToReveal(data) {
     var stage = data.stage;
     $("#revealStageElement").text(stage);
 
+    // Modify the prompt element to show the prompt in black
+    var promptDiv = document.createElement('div');
+    promptDiv.textContent = data.prompt;
+    promptDiv.style.color = "black";
+    promptDiv.style.fontSize = "24px";
+    promptDiv.style.fontWeight = "bold";
+    $("#revealPrompt").empty().append(promptDiv);
+
     // Sort the responses by votes.number
     data.responses.sort(function(a, b) {
         return b.votes.number - a.votes.number;

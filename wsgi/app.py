@@ -36,7 +36,8 @@ class DeployStage:
     @staticmethod
     def _deploy_reveal():
         responses = wackronyms.get_responses()
-        socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses}, namespace='/host')
+        prompt = wackronyms.get_prompt(wackronyms.current_round)
+        socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses, 'prompt': prompt}, namespace='/host')
         socketio.emit('transition', {'stage': wackronyms.current_stage}, namespace='/player')
 
     @staticmethod
