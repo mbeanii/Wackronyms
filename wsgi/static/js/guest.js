@@ -194,7 +194,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     $("#advanceToScoreButton").click(function() {
-        var selectedResponse = $("input[name='responseOption']:checked").val();
         if(selectedResponse){
             $.get("/advance_game", function(){});
         };

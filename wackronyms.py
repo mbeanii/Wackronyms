@@ -90,10 +90,13 @@ class Wackronyms:
         if self.current_round not in self.responses:
             self.responses[self.current_round] = []
         
-        self.responses[self.current_round].append({"player": player,
+        self.responses[self.current_round].append({"round": self.current_round,
+                                                   "prompt": self.get_prompt(self.current_round - 1),
+                                                   "player": player,
                                                    "response": response,
                                                    "isFirst": is_first,
-                                                   "points": int(is_first),
+                                                   "isWinner": False,
+                                                   "points": 0,
                                                    "votes": {
                                                          "players": [],
                                                          "number": 0
@@ -117,9 +120,12 @@ class Wackronyms:
         for response in self.responses[self.current_round]:
             serialized_responses.append(
                 {
+                    "round": response["round"],
+                    "prompt": response["prompt"],
                     "player": response["player"].to_dict(),
                     "response": response["response"],
                     "isFirst": response["isFirst"],
+                    "isWinner": response["isWinner"],
                     "points": response["points"],
                     "votes": response["votes"]
                 }
@@ -130,8 +136,52 @@ class Wackronyms:
         response = self.get_response(selected_response)
         response["votes"]["players"].append(self.get_player(player_name).to_dict())
         response["votes"]["number"] += 1
-        response["points"] += 1
         self.num_votes_this_round += 1
+
+    def calculate_winners(self) -> None:
+        """ Sets the isWinner flag on the winning response(s) """
+        max_votes = 0
+        winning_response_list = []
+        for response in self.responses[self.current_round]:
+            if response["votes"]["number"] >= max_votes:
+                max_votes = response["votes"]["number"]
+        for response in self.responses[self.current_round]:
+            if response["votes"]["number"] == max_votes:
+                winning_response_list.append(response)
+        for response in winning_response_list:
+            response["isWinner"] = True
+
+    def get_winning_responses(self) -> List[dict]:
+        winning_responses = []
+        for response in self.responses[self.current_round]:
+            if response["isWinner"]:
+                winning_responses.append(response)
+        return winning_responses
+
+    def calculate_scores(self) -> None:
+        """Adds two points for everyone who voted for the winner.
+        Adds one point for every vote the response received.
+        Adds one point to the response of the first player to submit based on the isFirst flag.
+        """
+        self.calculate_winners()
+        winning_response = self.get_winning_responses()
+        players_who_voted_for_the_winner = [voter["name"] for voter in winning_response[0]["votes"]["players"]]
+
+        # If player voted for the winner, their response gets two points
+        for response in self.responses[self.current_round]:
+            for player in players_who_voted_for_the_winner:
+                if player == response["player"].name:
+                    response["points"] += 2
+
+            # Player gets one point per vote received
+            response["points"] += response["votes"]["number"]
+
+            # If player was the first to submit, their response gets one point
+            if response["isFirst"]:
+                response["points"] += 1
+
+            # Save score to player object
+            response["player"].score += response["points"]
     
     def all_players_in(self) -> bool:
         return (len(self.responses[self.current_round]) == len(self.player_list))

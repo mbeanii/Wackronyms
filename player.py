@@ -10,9 +10,11 @@ class Player:
     def __init__(self, name, color):
         self.name = name
         self.color = color
+        self.score = 0
 
     def to_dict(self):
         return {
             'name': self.name,
             'color': self.color.hex_key,
+            'score': self.score,
         }

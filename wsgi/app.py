@@ -35,6 +35,7 @@ class DeployStage:
 
     @staticmethod
     def _deploy_reveal():
+        wackronyms.calculate_scores()
         responses = wackronyms.get_responses()
         prompt = wackronyms.get_prompt(wackronyms.current_round)
         socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses, 'prompt': prompt}, namespace='/host')
@@ -42,7 +43,10 @@ class DeployStage:
 
     @staticmethod
     def _deploy_score():
-        raise Exception("Not Implemented")
+        responses = wackronyms.get_responses()
+        prompt = wackronyms.get_prompt(wackronyms.current_round)
+        socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses}, namespace='/host')
+        socketio.emit('transition', {'stage': wackronyms.current_stage}, namespace='/player')
 
     def deploy(self):
         self.advance_function()
