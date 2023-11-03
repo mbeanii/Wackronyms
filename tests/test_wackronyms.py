@@ -122,3 +122,23 @@ class TestWackronyms:
         # not isFirst = 0 point; voted for winner = 2 pts; got 0 votes = 0 pts == total 2 pts
         assert self.wackronyms.responses[self.wackronyms.current_round][2]["points"] == 2
         assert self.wackronyms.responses[self.wackronyms.current_round][2]["points"] == self.wackronyms.get_player(self.player3.name).score
+
+    def test_calculate_scores_tie(self):
+        self.wackronyms.start_game()
+        self.wackronyms.add_response(self.player1, self.response_string1)
+        self.wackronyms.add_response(self.player2, self.response_string2)
+        self.wackronyms.vote_for_response(self.response_string1, self.player2.name)
+        self.wackronyms.vote_for_response(self.response_string2, self.player1.name)
+        self.wackronyms.calculate_scores()
+
+        assert self.wackronyms.responses[self.wackronyms.current_round][0]["isWinner"] == True
+        assert self.wackronyms.responses[self.wackronyms.current_round][1]["isWinner"] == True
+
+        assert self.wackronyms.responses[self.wackronyms.current_round][0]["isFirst"] == True
+        assert self.wackronyms.responses[self.wackronyms.current_round][1]["isFirst"] == False
+
+        # isFirst = 1 point; voted for winner = 2 pts; got 1 vote = 1 pt == total 4 pts
+        assert self.wackronyms.responses[self.wackronyms.current_round][0]["points"] == 4
+
+        # not isFirst = 0 point; voted for winner = 2 pts; got 1 vote = 1 pt == total 3 pts
+        assert self.wackronyms.responses[self.wackronyms.current_round][1]["points"] == 3
