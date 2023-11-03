@@ -91,10 +91,11 @@ function transitionToVote(data){
 };
 
 function transitionToReveal(data){
+    $("#revealStageElement").text("Look at the host's screen!");
 };
 
 function transitionToScore(data){
-    console.log("Not implemented")
+    $("#revealStageElement").text("Look at the host's screen!");
 }
 
 function togglePromptAndStartGameButtons() {
@@ -194,9 +195,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     $("#advanceToScoreButton").click(function() {
-        if(selectedResponse){
-            $.get("/advance_game", function(){});
-        };
+        $.get("/advance_game", function(){});
     });
 
     socket.on('hide_prompts', function() {

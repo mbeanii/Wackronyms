@@ -113,9 +113,12 @@ class TestWackronyms:
 
         # isFirst = 1 point; voted for winner = 2 pts; got 1 vote = 1 pt == total 4 pts
         assert self.wackronyms.responses[self.wackronyms.current_round][0]["points"] == 4
+        assert self.wackronyms.responses[self.wackronyms.current_round][0]["points"] == self.wackronyms.get_player(self.player1.name).score
 
         # not isFirst = 0 point; voted for winner = 0 pts; got 2 votes = 2 pts == total 2 pts
         assert self.wackronyms.responses[self.wackronyms.current_round][1]["points"] == 2
+        assert self.wackronyms.responses[self.wackronyms.current_round][1]["points"] == self.wackronyms.get_player(self.player2.name).score
         
         # not isFirst = 0 point; voted for winner = 2 pts; got 0 votes = 0 pts == total 2 pts
         assert self.wackronyms.responses[self.wackronyms.current_round][2]["points"] == 2
+        assert self.wackronyms.responses[self.wackronyms.current_round][2]["points"] == self.wackronyms.get_player(self.player3.name).score

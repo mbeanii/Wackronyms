@@ -44,6 +44,24 @@ function transitionToVote(data){
     });
 };
 
+function add_score(player, score, isWinner) {
+    var scoreDiv = document.createElement('div');
+    
+    var playerSpan = document.createElement('span');
+    playerSpan.textContent = player.name + ": ";
+    playerSpan.style.color = player.color;
+    scoreDiv.appendChild(playerSpan);
+    
+    var scoreSpan = document.createElement('span');
+    scoreSpan.textContent = score;
+    scoreSpan.style.color = player.color;
+    scoreDiv.appendChild(scoreSpan);
+    
+    scoreDiv.style.fontWeight = isWinner ? "bold" : "normal";
+    
+    $("#scoreList").append(scoreDiv);
+}
+
 function add_reveal_response(player, response_string, votes, isWinner) {
     var responseDiv = document.createElement('div');
     
@@ -104,7 +122,20 @@ function transitionToReveal(data) {
 };
 
 function transitionToScore(data){
-    console.log("Not implemented");
+    var stage = data.stage;
+    $("#scoreStageElement").text(stage);
+
+    // Sort the players by score
+    data.player_list.sort(function(a, b) {
+        return b.score - a.score;
+    });
+
+    for (let i = 0; i < data.player_list.length; i++) {
+        const player = data.player_list[i];
+        const score = player.score;
+        const isWinner = i == 0;
+        add_score(player, score, isWinner);
+    };
 };
 
 // Define the function to format the player list

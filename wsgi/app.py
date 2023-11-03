@@ -44,8 +44,7 @@ class DeployStage:
     @staticmethod
     def _deploy_score():
         responses = wackronyms.get_responses()
-        prompt = wackronyms.get_prompt(wackronyms.current_round)
-        socketio.emit('transition', {'stage': wackronyms.current_stage, 'responses': responses}, namespace='/host')
+        socketio.emit('transition', {'stage': wackronyms.current_stage, 'player_list': wackronyms.serialize_player_list(), 'responses': responses}, namespace='/host')
         socketio.emit('transition', {'stage': wackronyms.current_stage}, namespace='/player')
 
     def deploy(self):
