@@ -157,6 +157,16 @@ class Wackronyms:
             if response["isWinner"]:
                 winning_responses.append(response)
         return winning_responses
+    
+    def get_players_who_voted_for_the_winner(self):
+        winning_responses = self.get_winning_responses()
+        players_who_voted_for_the_winner = []
+        
+        for response in winning_responses:
+            for voter in response["votes"]["players"]:
+                if voter["name"] not in players_who_voted_for_the_winner:
+                    players_who_voted_for_the_winner.append(voter["name"])
+        return players_who_voted_for_the_winner
 
     def calculate_scores(self) -> None:
         """Adds two points for everyone who voted for the winner.
@@ -164,8 +174,7 @@ class Wackronyms:
         Adds one point to the response of the first player to submit based on the isFirst flag.
         """
         self.calculate_winners()
-        winning_response = self.get_winning_responses()
-        players_who_voted_for_the_winner = [voter["name"] for voter in winning_response[0]["votes"]["players"]]
+        players_who_voted_for_the_winner = self.get_players_who_voted_for_the_winner()
 
         # If player voted for the winner, their response gets two points
         for response in self.responses[self.current_round]:
