@@ -44,9 +44,43 @@ function transitionToVote(data){
     });
 };
 
-function add_score(player, score, isWinner) {
+function add_total_score(player, score, isWinner) {
     var scoreDiv = document.createElement('div');
+
+    var headingSpan = document.createElement('span');
+    headingSpan.textContent = "Total Score: ";
+    headingSpan.style.color = "black";
+    headingSpan.style.fontWeight = "bold";
+    scoreDiv.appendChild(headingSpan);
     
+    var playerSpan = document.createElement('span');
+    playerSpan.textContent = player.name + ": ";
+    playerSpan.style.color = player.color;
+    scoreDiv.appendChild(playerSpan);
+    
+    var scoreSpan = document.createElement('span');
+    scoreSpan.textContent = score;
+    scoreSpan.style.color = player.color;
+    scoreDiv.appendChild(scoreSpan);
+    
+    scoreDiv.style.fontWeight = isWinner ? "bold" : "normal";
+    
+    $("#totalScoreList").append(scoreDiv);
+}
+
+function add_round_heading(round) {
+    var headingSpan = document.createElement('div');
+    headingSpan.textContent = "Round " + round + ": ";
+    headingSpan.style.color = "black";
+    headingSpan.style.fontWeight = "bold";
+    scoreDiv.appendChild(headingSpan);
+    
+    $("#scoreList").append(scoreDiv);
+}
+
+function add_round_score(player, score, isWinner) {
+    var scoreDiv = document.createElement('div');
+
     var playerSpan = document.createElement('span');
     playerSpan.textContent = player.name + ": ";
     playerSpan.style.color = player.color;
@@ -61,6 +95,18 @@ function add_score(player, score, isWinner) {
     
     $("#scoreList").append(scoreDiv);
 }
+
+function add_round_scores(single_round_responses) {
+    if (single_round_responses.length == 0) {
+        return;
+    }
+    for (let i = 0; i < single_round_responses.length; i++) {
+        const player = single_round_responses[i].player;
+        const score = single_round_responses[i].score;
+        const isWinner = single_round_responses[i].isWinner;
+        add_round_score(player, score, isWinner);
+    };
+};
 
 function add_reveal_response(player, response_string, votes, isWinner) {
     var responseDiv = document.createElement('div');
@@ -116,16 +162,57 @@ function transitionToReveal(data) {
         const player = data.responses[i].player;
         const response_string = data.responses[i].response;
         const votes = data.responses[i].votes;
-        const isWinner = i == 0;
+        const isWinner = data.responses[i].isWinner;
         add_reveal_response(player, response_string, votes, isWinner);
     };
+};
+
+function split_responses_by_round(responses) {
+    currentRound = 0
+    rounds = []
+    responses_for_this_round = []
+    responses.sort(function(a, b) {
+        return a.round - b.round;
+    });
+    for (let i = 0; i < responses.length; i++) {
+        const round = responses[i].round;
+        console.log("Processing response:", responses[i]);
+        if (round == currentRound) {
+            responses_for_this_round.push(responses[i]);
+        }
+        else if (round > currentRound) {
+            currentRound = round;
+            if (responses_for_this_round.length > 0){
+                rounds.push(responses_for_this_round);
+            }
+            responses_for_this_round = [];
+        }
+        else {
+            console.log("ERROR: round number out of order");
+        }
+        responses_for_this_round.push(responses[i]);
+    }
+    return rounds;
 };
 
 function transitionToScore(data){
     var stage = data.stage;
     $("#scoreStageElement").text(stage);
 
-    // Sort the players by score
+    currentRound = 0
+    console.log("Responses:", data.responses);
+    rounds = split_responses_by_round(data.responses)
+    console.log("Rounds:", rounds);
+
+    
+
+    for (let i = 0; i < rounds.length; i++) {
+        const round = rounds[i];
+        add_round_heading(round[0].round);
+        add_round_scores(round);
+    }
+    
+    // Sort players by score
     data.player_list.sort(function(a, b) {
         return b.score - a.score;
     });
@@ -133,8 +220,11 @@ function transitionToScore(data){
     for (let i = 0; i < data.player_list.length; i++) {
         const player = data.player_list[i];
         const score = player.score;
-        const isWinner = i == 0;
-        add_score(player, score, isWinner);
+        var isWinner = i == 0;
+        if (i > 0) {
+            isWinner = player.score == data.player_list[0].score;
+        }
+        add_total_score(player, score, isWinner);
     };
 };
 
