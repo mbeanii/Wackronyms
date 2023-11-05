@@ -107,7 +107,10 @@ function add_round_scores(single_round_responses) {
     for (let i = 0; i < single_round_responses.length; i++) {
         const player = single_round_responses[i].player;
         const score = single_round_responses[i].points;
-        const isWinner = single_round_responses[i].isWinner;
+        var isWinner = i == 0;
+        if (i > 0) {
+            isWinner = player.score == single_round_responses[0].score;
+        }
         add_round_score(player, score, isWinner);
     };
 };
@@ -115,15 +118,15 @@ function add_round_scores(single_round_responses) {
 function add_reveal_response(player, response_string, votes, isWinner) {
     var responseDiv = document.createElement('div');
     
-    var playerSpan = document.createElement('span');
-    playerSpan.textContent = player.name + ": ";
-    playerSpan.style.color = player.color;
-    responseDiv.appendChild(playerSpan);
-    
     var responseSpan = document.createElement('span');
-    responseSpan.textContent = response_string;
+    responseSpan.textContent = response_string + ": ";
     responseSpan.style.color = player.color;
     responseDiv.appendChild(responseSpan);
+    
+    var playerSpan = document.createElement('span');
+    playerSpan.textContent = player.name;
+    playerSpan.style.color = player.color;
+    responseDiv.appendChild(playerSpan);
     
     if (votes.number > 0) {
         var pointsSpan = document.createElement('span');
@@ -179,7 +182,7 @@ function splitResponsesByRound(responses) {
         return a.round - b.round;
     });
     for (let i = 0; i < responses.length; i++) {
-        const round = responses[i].round;
+        const round = responses[i].round;        
         console.log("Processing response:", responses[i]);
         if (round == roundCounter) {
             responses_for_this_round.push(responses[i]);
@@ -187,6 +190,10 @@ function splitResponsesByRound(responses) {
         else if (round > roundCounter) {
             roundCounter = round;
             if (responses_for_this_round.length > 0){
+                // Sort the responses by votes.number
+                responses_for_this_round.sort(function(a, b) {
+                    return b.votes.number - a.votes.number;
+                });
                 rounds.push(responses_for_this_round);
             }
             responses_for_this_round = [];
@@ -197,6 +204,10 @@ function splitResponsesByRound(responses) {
         }
     }
     if (responses_for_this_round.length > 0){
+        // Sort the responses by votes.number
+        responses_for_this_round.sort(function(a, b) {
+            return b.votes.number - a.votes.number;
+        });
         rounds.push(responses_for_this_round);
     }
     return rounds;
