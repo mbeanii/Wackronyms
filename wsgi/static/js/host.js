@@ -44,14 +44,16 @@ function transitionToVote(data){
     });
 };
 
-function add_total_score(player, score, isWinner) {
-    var scoreDiv = document.createElement('div');
-
-    var headingSpan = document.createElement('span');
+function add_total_score_heading() {
+    var headingSpan = document.createElement('div');
     headingSpan.textContent = "Total Score: ";
     headingSpan.style.color = "black";
     headingSpan.style.fontWeight = "bold";
-    scoreDiv.appendChild(headingSpan);
+    $("#totalScoreList").append(headingSpan);
+}
+
+function add_total_score(player, score, isWinner) {
+    var scoreDiv = document.createElement('div');
     
     var playerSpan = document.createElement('span');
     playerSpan.textContent = player.name + ": ";
@@ -69,13 +71,15 @@ function add_total_score(player, score, isWinner) {
 }
 
 function add_round_heading(round) {
+    var roundDiv = document.createElement('div');
+
     var headingSpan = document.createElement('div');
     headingSpan.textContent = "Round " + round + ": ";
     headingSpan.style.color = "black";
     headingSpan.style.fontWeight = "bold";
-    scoreDiv.appendChild(headingSpan);
+    roundDiv.appendChild(headingSpan);
     
-    $("#scoreList").append(scoreDiv);
+    $("#scoreList").append(roundDiv);
 }
 
 function add_round_score(player, score, isWinner) {
@@ -102,7 +106,7 @@ function add_round_scores(single_round_responses) {
     }
     for (let i = 0; i < single_round_responses.length; i++) {
         const player = single_round_responses[i].player;
-        const score = single_round_responses[i].score;
+        const score = single_round_responses[i].points;
         const isWinner = single_round_responses[i].isWinner;
         add_round_score(player, score, isWinner);
     };
@@ -167,8 +171,8 @@ function transitionToReveal(data) {
     };
 };
 
-function split_responses_by_round(responses) {
-    currentRound = 0
+function splitResponsesByRound(responses) {
+    roundCounter = 0
     rounds = []
     responses_for_this_round = []
     responses.sort(function(a, b) {
@@ -177,20 +181,23 @@ function split_responses_by_round(responses) {
     for (let i = 0; i < responses.length; i++) {
         const round = responses[i].round;
         console.log("Processing response:", responses[i]);
-        if (round == currentRound) {
+        if (round == roundCounter) {
             responses_for_this_round.push(responses[i]);
         }
-        else if (round > currentRound) {
-            currentRound = round;
+        else if (round > roundCounter) {
+            roundCounter = round;
             if (responses_for_this_round.length > 0){
                 rounds.push(responses_for_this_round);
             }
             responses_for_this_round = [];
+            responses_for_this_round.push(responses[i]);
         }
         else {
             console.log("ERROR: round number out of order");
         }
-        responses_for_this_round.push(responses[i]);
+    }
+    if (responses_for_this_round.length > 0){
+        rounds.push(responses_for_this_round);
     }
     return rounds;
 };
@@ -199,24 +206,22 @@ function transitionToScore(data){
     var stage = data.stage;
     $("#scoreStageElement").text(stage);
 
-    currentRound = 0
     console.log("Responses:", data.responses);
-    rounds = split_responses_by_round(data.responses)
+    rounds = splitResponsesByRound(data.responses)
     console.log("Rounds:", rounds);
-
     
-
     for (let i = 0; i < rounds.length; i++) {
         const round = rounds[i];
         add_round_heading(round[0].round);
         add_round_scores(round);
-    }
+    };
     
     // Sort players by score
     data.player_list.sort(function(a, b) {
         return b.score - a.score;
     });
 
+    add_total_score_heading();
     for (let i = 0; i < data.player_list.length; i++) {
         const player = data.player_list[i];
         const score = player.score;
