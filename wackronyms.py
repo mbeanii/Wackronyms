@@ -91,7 +91,7 @@ class Wackronyms:
             self.responses[self.current_round] = []
         
         self.responses[self.current_round].append({"round": self.current_round,
-                                                   "prompt": self.get_prompt(self.current_round - 1),
+                                                   "prompt": self.get_prompt(self.current_round),
                                                    "player": player,
                                                    "response": response,
                                                    "isFirst": is_first,
@@ -115,9 +115,11 @@ class Wackronyms:
                 return response
         raise Exception("Response not found")
     
-    def get_responses(self) -> List[dict]:
+    def get_round_responses(self, round:int=None) -> List[dict]:
         serialized_responses = []
-        for response in self.responses[self.current_round]:
+        if not round:
+            round = self.current_round
+        for response in self.responses[round]:
             serialized_responses.append(
                 {
                     "round": response["round"],
@@ -131,6 +133,13 @@ class Wackronyms:
                 }
             )
         return serialized_responses
+    
+    def get_all_responses(self) -> List[dict]:
+        all_responses = []
+        for round in range(len(self.responses)):
+            for response in self.get_round_responses(round):
+                all_responses.append(response)
+        return all_responses
     
     def vote_for_response(self, selected_response: str, player_name) -> None:
         response = self.get_response(selected_response)

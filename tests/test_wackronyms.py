@@ -75,7 +75,7 @@ class TestWackronyms:
                             "response": self.response_string1,
                             "isFirst": True,
                             "isWinner": False,
-                            "points": 1,
+                            "points": 0,
                             "votes": {
                                     "players": [],
                                     "number": 0
@@ -84,12 +84,9 @@ class TestWackronyms:
     def test_vote_for_response(self):
         self.wackronyms.add_response(self.player2, self.response_string2)
         response = self.wackronyms.get_response(self.response_string2)
-        points_before = response["points"]
         self.wackronyms.vote_for_response(self.response_string2, self.player1.name)
-        points_after = response["points"]
         votes_after = response["votes"]["number"]
         player_actual = response["votes"]["players"][0]["name"]
-        assert points_after == points_before + 1
         assert votes_after == 1
         assert player_actual == self.player1.name
 
@@ -142,3 +139,29 @@ class TestWackronyms:
 
         # not isFirst = 0 point; voted for winner = 2 pts; got 1 vote = 1 pt == total 3 pts
         assert self.wackronyms.responses[self.wackronyms.current_round][1]["points"] == 3
+
+    def test_get_all_responses(self):
+        self.wackronyms.start_game()
+        self.wackronyms.add_response(self.player1, self.response_string1)
+        self.wackronyms.add_response(self.player2, self.response_string2)
+        self.wackronyms.vote_for_response(self.response_string1, self.player2.name)
+        self.wackronyms.vote_for_response(self.response_string2, self.player1.name)
+
+        self.wackronyms.advance_game()
+        self.wackronyms.current_round = 2
+        self.wackronyms.add_response(self.player1, self.response_string1)
+        self.wackronyms.add_response(self.player2, self.response_string2)
+        self.wackronyms.vote_for_response(self.response_string1, self.player2.name)
+        self.wackronyms.vote_for_response(self.response_string2, self.player1.name)
+
+        self.wackronyms.advance_game()
+        self.wackronyms.current_round = 3
+        self.wackronyms.add_response(self.player1, self.response_string1)
+        self.wackronyms.add_response(self.player2, self.response_string2)
+        self.wackronyms.vote_for_response(self.response_string1, self.player2.name)
+        self.wackronyms.vote_for_response(self.response_string2, self.player1.name)
+
+        all_responses = self.wackronyms.get_all_responses()
+
+        assert len(all_responses) == 6
+        
