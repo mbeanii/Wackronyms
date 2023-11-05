@@ -95,13 +95,13 @@ function transitionToReveal(data){
 };
 
 function transitionToScore(data){
-    $("#revealStageElement").text("Look at the host's screen!");
-}
+    $("#scoreStageElement").text("Look at the host's screen!");
+};
 
 function togglePromptAndStartGameButtons() {
     $("#promptEntryModal").hide();
     $("#startGameElement").show();
-}
+};
 
 document.addEventListener("DOMContentLoaded", function() {
     // Websocket connection
@@ -195,6 +195,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     $("#advanceToScoreButton").click(function() {
+        $.get("/advance_game", function(){});
+    });
+
+    $("#advanceRoundButton").click(function() {
         $.get("/advance_game", function(){});
     });
 
