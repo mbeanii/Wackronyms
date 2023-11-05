@@ -60,7 +60,13 @@ function start_game(){
     $.get("/start_game", function() {});
 }
 
+function cleanUpScore(){
+    $("#scoreStageElement").empty();
+};
+
 function transitionToResponse(data){
+    cleanUpScore();
+
     var stage = data.stage;
     var prompt = data.prompt;
     var letters = data.letters;
@@ -71,7 +77,15 @@ function transitionToResponse(data){
     $("#lettersElement").css("color", playerColor);
 };
 
+function cleanUpResponse(){
+    $("#submittedResponse").empty();
+    $("#responseModal").show();
+    $("#responseInput").val("");
+}
+
 function transitionToVote(data){
+    cleanUpResponse();
+
     var stage = data.stage;
     var response_strings = data.response_strings;
 
@@ -90,11 +104,26 @@ function transitionToVote(data){
     });
 };
 
+function cleanUpVote(){
+    $("#voteStageElement").empty();
+    $("#voteStageElement").show();
+    $("#radioMenu").empty();
+    $("#radioMenu").show();
+    $("#submitVoteButton").show();
+    $("#thanksForVoting").empty();
+}
+
 function transitionToReveal(data){
+    cleanUpVote();
     $("#revealStageElement").text("Look at the host's screen!");
 };
 
+function cleanUpReveal(){
+    $("#revealStageElement").empty();
+}
+
 function transitionToScore(data){
+    cleanUpReveal();
     $("#scoreStageElement").text("Look at the host's screen!");
 };
 

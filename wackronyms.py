@@ -51,7 +51,7 @@ class Wackronyms:
                 return player
 
     def get_prompt(self, index: int):
-        return self.prompt_list[index].get('prompt')
+        return self.prompt_list[index-1].get('prompt')
     
     def add_prompt(self, player: Player, prompt: str) -> None:
         num_prompts = len(self.prompt_list)

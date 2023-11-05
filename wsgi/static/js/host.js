@@ -23,7 +23,13 @@ function setStageVisibility(currentStage) {
     };
 };
 
+function cleanUpScore(){
+    $("#scoreList").empty();
+    $("#totalScoreList").empty();
+}
+
 function transitionToResponse(data){
+    cleanUpScore();
     var stage = data.stage;
     var prompt = data.prompt;
     var letters = data.letters;
@@ -33,7 +39,14 @@ function transitionToResponse(data){
     $("#lettersElement").text(letters);
 };
 
+function cleanUpResponse(){
+    $("#responseList").empty();
+    $("#responseElement").val("");
+}
+
 function transitionToVote(data){
+    cleanUpResponse();
+
     var stage = data.stage;
     var response_strings = data.response_strings;
 
@@ -43,6 +56,12 @@ function transitionToVote(data){
         $('#responseList').append(listItem);
     });
 };
+
+function cleanUpVote(){
+    $("#scoreList").empty();
+    $("#totalScoreList").empty();
+    $("#revealResponseList").empty();
+}
 
 function add_total_score_heading() {
     var headingSpan = document.createElement('div');
@@ -138,7 +157,7 @@ function add_reveal_response(player, response_string, votes, isWinner) {
         var voterNames = votes.players.map(function(voter) {
             return voter.name;
         });
-        votersSpan.textContent = " - voted by: " + voterNames.join(", ");
+        votersSpan.textContent = " - voted for by: " + voterNames.join(", ");
         votersSpan.style.color = "gray";
         responseDiv.appendChild(votersSpan);
     }
@@ -149,6 +168,8 @@ function add_reveal_response(player, response_string, votes, isWinner) {
 };
 
 function transitionToReveal(data) {
+    cleanUpVote();
+
     var stage = data.stage;
     $("#revealStageElement").text(stage);
 
@@ -173,6 +194,12 @@ function transitionToReveal(data) {
         add_reveal_response(player, response_string, votes, isWinner);
     };
 };
+
+function cleanUpReveal(){
+    $("#scoreList").empty();
+    $("#totalScoreList").empty();
+    $("#revealResponseList").empty();
+}
 
 function splitResponsesByRound(responses) {
     roundCounter = 0
@@ -214,6 +241,8 @@ function splitResponsesByRound(responses) {
 };
 
 function transitionToScore(data){
+    cleanUpReveal();
+
     var stage = data.stage;
     $("#scoreStageElement").text(stage);
 
