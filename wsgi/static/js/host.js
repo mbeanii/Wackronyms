@@ -64,7 +64,14 @@ function cleanUpVote(){
 }
 
 function add_total_score_heading() {
+    
+    var totScoreDiv = document.createElement('div');
+    var lineBreak = document.createElement('br');
+    totScoreDiv.appendChild(lineBreak);
+    $("#totalScoreList").append(totScoreDiv);
+
     var headingSpan = document.createElement('div');
+    
     headingSpan.textContent = "Total Score: ";
     headingSpan.style.color = "black";
     headingSpan.style.fontWeight = "bold";
@@ -91,6 +98,9 @@ function add_total_score(player, score, isWinner) {
 
 function add_round_heading(round) {
     var roundDiv = document.createElement('div');
+    
+    var lineBreak = document.createElement('br');
+    roundDiv.appendChild(lineBreak);
 
     var headingSpan = document.createElement('div');
     headingSpan.textContent = "Round " + round + ": ";

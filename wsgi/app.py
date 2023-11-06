@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO
 from wackronyms import Wackronyms
-from globals import MAX_PROMPTS
+from globals import MAX_PROMPTS, NUM_ROUNDS
 import logging
 
 app = Flask(__name__, static_url_path='/wsgi/static')
@@ -44,8 +44,9 @@ class DeployStage:
     @staticmethod
     def _deploy_score():
         responses = wackronyms.get_all_responses()
+        is_final_round = wackronyms.current_round == NUM_ROUNDS
         socketio.emit('transition', {'stage': wackronyms.current_stage, 'player_list': wackronyms.serialize_player_list(), 'responses': responses}, namespace='/host')
-        socketio.emit('transition', {'stage': wackronyms.current_stage}, namespace='/player')
+        socketio.emit('transition', {'stage': wackronyms.current_stage, 'is_final_round': is_final_round}, namespace='/player')
 
     def deploy(self):
         self.advance_function()
@@ -154,6 +155,11 @@ def vote():
     if num_players == wackronyms.num_votes_this_round:
             advance_game()
     return jsonify({'message': 'Vote submitted'})
+
+@app.route("/finishGame", methods=["POST"])
+def finish_game():
+    socketio.emit('finishGame', {}, namespace='/player')
+    return jsonify({'game_ended': True})
 
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", debug=True)

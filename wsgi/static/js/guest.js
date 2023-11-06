@@ -8,8 +8,7 @@ const stageElements = {
     "score": "scoreElements"
 };
 
-function setStageVisibility(currentStage) {
-    // Hide all elements
+function hideAllElements() {
     for (const stage in stageElements) {
         const elementId = stageElements[stage];
         const element = document.getElementById(elementId);
@@ -17,13 +16,19 @@ function setStageVisibility(currentStage) {
             element.style.display = "none";
         }
     }
+}
 
-    // Show elements for the current stage
+function showStageElements(currentStage) {
     const currentElementId = stageElements[currentStage];
     const currentElement = document.getElementById(currentElementId);
     if (currentElement) {
         currentElement.style.display = "block";
     }
+}
+
+function setStageVisibility(currentStage) {
+    hideAllElements();
+    showStageElements(currentStage);
 }
 
 function addPrompt(promptText) {
@@ -125,6 +130,14 @@ function cleanUpReveal(){
 function transitionToScore(data){
     cleanUpReveal();
     $("#scoreStageElement").text("Look at the host's screen!");
+
+    if (data.is_final_round){
+        $("#advanceRoundElement").hide();
+        $("#finishGameElement").show();
+    } else {
+        $("#advanceRoundElement").show();
+        $("#finishGameElement").hide();
+    }
 };
 
 function togglePromptAndStartGameButtons() {
@@ -153,6 +166,11 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (stage == "score"){
             transitionToScore(data);
         }
+    });
+
+    socket.on('finishGame', function() {
+        hideAllElements()
+        $("#gameOverElement").show();
     });
 
     $("#startGameButton").click(function() {
@@ -229,6 +247,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     $("#advanceRoundButton").click(function() {
         $.get("/advance_game", function(){});
+    });
+
+    $("#finishGameButton").click(function() {
+        $.post("/finishGame", {}, function(){
+        });
     });
 
     socket.on('hide_prompts', function() {
