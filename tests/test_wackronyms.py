@@ -91,6 +91,7 @@ class TestWackronyms:
         assert player_actual == self.player1.name
 
     def test_calculate_scores(self):
+        self.setup_class()
         self.wackronyms.start_game()
         self.wackronyms.add_response(self.player1, self.response_string1)
         self.wackronyms.add_response(self.player2, self.response_string2)
@@ -121,6 +122,7 @@ class TestWackronyms:
         assert self.wackronyms.responses[self.wackronyms.current_round][2]["points"] == self.wackronyms.get_player(self.player3.name).score
 
     def test_calculate_scores_tie(self):
+        self.setup_class()
         self.wackronyms.start_game()
         self.wackronyms.add_response(self.player1, self.response_string1)
         self.wackronyms.add_response(self.player2, self.response_string2)
@@ -141,6 +143,7 @@ class TestWackronyms:
         assert self.wackronyms.responses[self.wackronyms.current_round][1]["points"] == 3
 
     def test_get_all_responses(self):
+        self.setup_class()
         self.wackronyms.start_game()
         self.wackronyms.add_response(self.player1, self.response_string1)
         self.wackronyms.add_response(self.player2, self.response_string2)
