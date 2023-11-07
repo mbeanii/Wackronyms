@@ -133,12 +133,15 @@ function add_round_scores(single_round_responses) {
     if (single_round_responses.length == 0) {
         return;
     }
+    single_round_responses.sort(function(a, b) {
+        return b.points - a.points;
+    });
     for (let i = 0; i < single_round_responses.length; i++) {
         const player = single_round_responses[i].player;
         const score = single_round_responses[i].points;
         var isWinner = i == 0;
         if (i > 0) {
-            isWinner = player.score == single_round_responses[0].score;
+            isWinner = player.score == single_round_responses[0].points;
         }
         add_round_score(player, score, isWinner);
     };
@@ -285,20 +288,20 @@ function transitionToScore(data){
 
 // Define the function to format the player list
 function formatPlayerList(data) {
-  // Get the player list element
-  var playerListElement = document.getElementById('playerList');
+    // Get the player list element
+    var playerListElement = document.getElementById('playerList');
 
-  // Clear the previous content
-  playerListElement.innerHTML = '';
+    // Clear the previous content
+    playerListElement.innerHTML = '';
 
-  // Iterate through the player list and add each player's name with their color
-  data.player_list.forEach(function(player) {
-      var playerSpan = document.createElement('span');
-      playerSpan.textContent = player.name;
-      playerSpan.style.color = player.color;
-      playerSpan.className = 'player-name';
-      playerListElement.appendChild(playerSpan);
-  });
+    // Iterate through the player list and add each player's name with their color
+    data.player_list.forEach(function(player) {
+        var playerSpan = document.createElement('span');
+        playerSpan.textContent = player.name;
+        playerSpan.style.color = player.color;
+        playerSpan.className = 'player-name';
+        playerListElement.appendChild(playerSpan);
+    });
 }
 
 function formatPromptList(data) {
@@ -343,6 +346,18 @@ socket.on('transition', function(data) {
 
 socket.on('update_prompts', function(data) {
     formatPromptList(data);
+});
+
+socket.on('playerSubmittedResponse', function(data) {
+    var player_name = data.player.name;
+    var player_color = data.player.color;
+    var playerSpan = document.createElement('span');
+    playerSpan.textContent = player_name + " submitted a response!";
+    playerSpan.style.color = player_color;
+    playerSpan.style.fontWeight = data.isFirst ? "bold" : "normal";
+    $("#submittedPlayerList").append(playerSpan);
+    var playerDiv = document.createElement('div');
+    $("#submittedPlayerList").append(playerDiv);
 });
 
 window.addEventListener('beforeunload', function (e) {
