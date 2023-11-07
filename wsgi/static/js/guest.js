@@ -258,3 +258,18 @@ document.addEventListener("DOMContentLoaded", function() {
             togglePromptAndStartGameButtons();
     });
 });
+
+window.addEventListener('beforeunload', function (e) {
+    // Prompt the user with a warning message
+    e.preventDefault();
+    var confirmationMessage = 'Are you sure you want to leave? This will end the game for all players.';
+    e.returnValue = confirmationMessage;
+    
+    // Send an AJAX request if the user selects "Yes"
+    setTimeout(function() {
+        if (confirm(confirmationMessage)) {
+            $.post("/finishGame", {}, function(data){
+            });
+        }
+    }, 0);
+});
