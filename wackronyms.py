@@ -85,7 +85,8 @@ class Wackronyms:
             self.letters += letter
         return self.letters
     
-    def add_response(self, player: Player, response: str) -> None:
+    def add_response(self, player: Player, response: str) -> bool:
+        """ Returns whether this is the first response for the round."""
         is_first = self.current_round not in self.responses
         if self.current_round not in self.responses:
             self.responses[self.current_round] = []
@@ -101,6 +102,7 @@ class Wackronyms:
                                                          "players": [],
                                                          "number": 0
                                                    }})
+        return is_first
         
     def get_response_strings_in_random_order(self) -> List[str]:
         response_string_list = []

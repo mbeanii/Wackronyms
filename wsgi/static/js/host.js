@@ -348,7 +348,7 @@ socket.on('update_prompts', function(data) {
 window.addEventListener('beforeunload', function (e) {
     // Prompt the user with a warning message
     e.preventDefault();
-    var confirmationMessage = 'Are you sure you want to leave? This will end the game for all players.';
+    var confirmationMessage = 'Are you sure you want to leave?';
     e.returnValue = confirmationMessage;
     
     // Send an AJAX request if the user selects "Yes"

@@ -84,6 +84,7 @@ function transitionToResponse(data){
 
 function cleanUpResponse(){
     $("#submittedResponse").empty();
+    $("#firstPlayerElement").empty();
     $("#responseModal").show();
     $("#responseInput").val("");
 }
@@ -144,6 +145,10 @@ function togglePromptAndStartGameButtons() {
     $("#promptEntryModal").hide();
     $("#startGameElement").show();
 };
+
+function congratulateFirstPlayer() {
+    $("#firstPlayerElement").text("\nCongratulations, you're first!");
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     // Websocket connection
@@ -213,6 +218,9 @@ document.addEventListener("DOMContentLoaded", function() {
                         addResponse(responseText);
                         $.post("/response", { player_name: playerName, response: responseText }, function(data) {
                             responseInput.value = "";
+                            if (data.isFirst) {
+                                congratulateFirstPlayer();
+                            }
                         });
                     } else {
                         var message = 'Each word in your response should begin with each letter in "' + letters + '"';
@@ -262,14 +270,12 @@ document.addEventListener("DOMContentLoaded", function() {
 window.addEventListener('beforeunload', function (e) {
     // Prompt the user with a warning message
     e.preventDefault();
-    var confirmationMessage = 'Are you sure you want to leave? This will end the game for all players.';
+    var confirmationMessage = 'Are you sure you want to leave?';
     e.returnValue = confirmationMessage;
     
-    // Send an AJAX request if the user selects "Yes"
     setTimeout(function() {
         if (confirm(confirmationMessage)) {
-            $.post("/finishGame", {}, function(data){
-            });
+            // Actions if they confirm
         }
     }, 0);
 });

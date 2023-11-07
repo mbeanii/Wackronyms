@@ -139,10 +139,10 @@ def response():
     response = request.form.get("response")
     player = wackronyms.get_player(player_name)
     if player and response:
-        wackronyms.add_response(player, response)
+        is_first_response = wackronyms.add_response(player, response)
         if wackronyms.all_players_in():
             advance_game()
-    return jsonify({'message': 'Prompt submitted'})
+    return jsonify({'isFirst': is_first_response})
 
 @app.route("/vote", methods=["POST"])
 def vote():
