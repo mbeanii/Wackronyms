@@ -65,6 +65,95 @@ function cleanUpVote(){
     $("#responseList").empty();
 }
 
+function createScoreTable() {
+    var scoreTable = document.createElement('table');
+    scoreTable.style.width = '100%';
+    scoreTable.style.border = '1px solid black';
+    scoreTable.style.borderCollapse = 'collapse';
+    scoreTable.style.fontSize = '24px';
+    scoreTable.style.fontWeight = 'bold';
+    scoreTable.style.textAlign = 'center';
+    scoreTable.style.margin = 'auto';
+    scoreTable.style.marginTop = '10px';
+    scoreTable.style.marginBottom = '10px';
+    scoreTable.style.marginLeft = 'auto';
+    scoreTable.style.marginRight = 'auto';
+    scoreTable.style.tableLayout = 'fixed';
+    scoreTable.style.wordWrap = 'break-word';
+    scoreTable.style.wordBreak = 'break-all';
+    scoreTable.style.whiteSpace = 'normal';
+    scoreTable.style.backgroundColor = 'white';
+    scoreTable.style.color = 'black';
+    scoreTable.style.fontFamily = 'sans-serif';
+    scoreTable.style.padding = '5px';
+    scoreTable.style.borderRadius = '5px';
+    scoreTable.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.3)';
+    scoreTable.style.display = 'block';
+    scoreTable.style.overflow = 'auto';
+    scoreTable.style.maxHeight = '500px';
+    scoreTable.style.maxWidth = '500px';
+    scoreTable.style.minWidth = '300px';
+    scoreTable.style.minHeight = '300px';
+    scoreTable.style.textOverflow = 'ellipsis';
+    scoreTable.style.verticalAlign = 'middle';
+    scoreTable.style.lineHeight = 'normal';
+    scoreTable.style.position = 'relative';
+    scoreTable.style.left = '0';
+    scoreTable.style.right = '0';
+    scoreTable.style.top = '0';
+    scoreTable.style.bottom = '0';
+    
+    var header = scoreTable.createTHead();
+    var headerRow = header.insertRow(0);
+    var playerHeader = headerRow.insertCell(0);
+    playerHeader.innerHTML = "Player";
+    
+    var isFirstHeader = headerRow.insertCell(1);
+    isFirstHeader.innerHTML = "First";
+
+    var votedForWinnerHeader = headerRow.insertCell(2);
+    votedForWinnerHeader.innerHTML = "Voted for Winner";
+
+    var numVotesHeader = headerRow.insertCell(3);
+    numVotesHeader.innerHTML = "Number of Votes";
+
+    var totalScoreHeader = headerRow.insertCell(4);
+    totalScoreHeader.innerHTML = "Total Score";
+
+    return scoreTable;
+}
+
+function insertToScoreTable(data, scoreTable) {
+    var row = scoreTable.insertRow(0);
+
+    var playerCell = row.insertCell(0);
+    playerCell.innerHTML = data.player.name;
+    playerCell.style.color = data.player.color;
+    playerCell.style.fontWeight = data.isWinner ? "bold" : "normal";
+
+    var isFirstCell = row.insertCell(1);
+    isFirstCell.innerHTML = data.isFirst;
+    isFirstCell.style.color = data.player.color;
+    isFirstCell.style.fontWeight = data.isWinner ? "bold" : "normal";
+
+    var votedForWinnerCell = row.insertCell(2);
+    votedForWinnerCell.innerHTML = data.votedForWinner;
+    votedForWinnerCell.style.color = data.player.color;
+    votedForWinnerCell.style.fontWeight = data.isWinner ? "bold" : "normal";
+
+    var numVotesCell = row.insertCell(3);
+    numVotesCell.innerHTML = data.numVotes;
+    numVotesCell.style.color = data.player.color;
+    numVotesCell.style.fontWeight = data.isWinner ? "bold" : "normal";
+
+    var totalScoreCell = row.insertCell(4);
+    totalScoreCell.innerHTML = data.totalScore;
+    totalScoreCell.style.color = data.player.color;
+    totalScoreCell.style.fontWeight = data.isWinner ? "bold" : "normal";
+
+    return scoreTable;
+}
+
 function add_total_score_heading() {
     
     var totScoreDiv = document.createElement('div');
@@ -138,15 +227,36 @@ function add_round_scores(single_round_responses) {
     single_round_responses.sort(function(a, b) {
         return b.points - a.points;
     });
+    scoreTable = createScoreTable();
     for (let i = 0; i < single_round_responses.length; i++) {
-        const player = single_round_responses[i].player;
-        const score = single_round_responses[i].points;
         var isWinner = i == 0;
         if (i > 0) {
             isWinner = player.score == single_round_responses[0].points;
         }
-        add_round_score(player, score, isWinner);
+        single_round_responses[i].isWinner = isWinner;
+    }
+
+    // get single round responses who are winners
+    var winners = single_round_responses.filter(function(response) {
+        return response.isWinner;
+    });
+
+    // for each player, determine if they voted for a winner
+    for (let i = 0; i < single_round_responses.length; i++) {
+        const player = single_round_responses[i].player;
+        const votedForWinner = winners.some(function(winner) {
+            return winner.votes.players.some(function(voter) {
+                return voter.name == player.name;
+            });
+        });
+        single_round_responses[i].votedForWinner = votedForWinner;
+    }
+
+    for (let i = 0; i < single_round_responses.length; i++) {
+        scoreTable = insertToScoreTable(single_round_responses[i], scoreTable)
+        add_round_score(single_round_responses[i].player, single_round_responses[i].points, isWinner);
     };
+    $("#scoreList").append(scoreTable);
 };
 
 function add_reveal_response(player, response_string, votes, isWinner) {
