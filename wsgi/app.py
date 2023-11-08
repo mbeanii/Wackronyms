@@ -80,8 +80,9 @@ def host():
 def start_game():
     wackronyms.start_game()
     letters = wackronyms.get_random_string()
-    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/host')
-    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': wackronyms.get_prompt(0), 'letters': letters}, namespace='/player')
+    prompt = wackronyms.get_prompt(wackronyms.current_round)
+    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': prompt, 'letters': letters}, namespace='/host')
+    socketio.emit('transition', {'stage': wackronyms.current_stage, 'prompt': prompt, 'letters': letters}, namespace='/player')
     return "Game started"
 
 @app.route("/advance_game", methods=["GET"])
