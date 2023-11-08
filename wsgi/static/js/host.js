@@ -24,6 +24,7 @@ function setStageVisibility(currentStage) {
 };
 
 function cleanUpScore(){
+    $("#scoreStageElement").val("");
     $("#scoreList").empty();
     $("#totalScoreList").empty();
 }
@@ -40,8 +41,10 @@ function transitionToResponse(data){
 };
 
 function cleanUpResponse(){
-    $("#responseList").empty();
-    $("#responseElement").val("");
+    $("#stageElement").val("");
+    $("#promptElement").val("");
+    $("#lettersElement").val("");
+    $("#submittedPlayerList").empty();
 }
 
 function transitionToVote(data){
@@ -58,9 +61,8 @@ function transitionToVote(data){
 };
 
 function cleanUpVote(){
-    $("#scoreList").empty();
-    $("#totalScoreList").empty();
-    $("#revealResponseList").empty();
+    $("#voteStageElement").val("");
+    $("#responseList").empty();
 }
 
 function add_total_score_heading() {
@@ -209,8 +211,8 @@ function transitionToReveal(data) {
 };
 
 function cleanUpReveal(){
-    $("#scoreList").empty();
-    $("#totalScoreList").empty();
+    $("#revealStageElement").val("");
+    $("#revealPrompt").val("");
     $("#revealResponseList").empty();
 }
 
@@ -355,6 +357,7 @@ socket.on('playerSubmittedResponse', function(data) {
     playerSpan.textContent = player_name + " submitted a response!";
     playerSpan.style.color = player_color;
     playerSpan.style.fontWeight = data.isFirst ? "bold" : "normal";
+    console.log(playerSpan);
     $("#submittedPlayerList").append(playerSpan);
     var playerDiv = document.createElement('div');
     $("#submittedPlayerList").append(playerDiv);
@@ -366,11 +369,9 @@ window.addEventListener('beforeunload', function (e) {
     var confirmationMessage = 'Are you sure you want to leave?';
     e.returnValue = confirmationMessage;
     
-    // Send an AJAX request if the user selects "Yes"
     setTimeout(function() {
-        if (confirm(confirmationMessage)) {
-            $.post("/finishGame", {}, function(data){
-            });
-        }
+            if (confirm(confirmationMessage)) {
+                // Handle the user leaving
+            }
     }, 0);
 });

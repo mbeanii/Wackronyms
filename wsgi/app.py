@@ -142,9 +142,9 @@ def response():
     player = wackronyms.get_player(player_name)
     if player and response:
         is_first_response = wackronyms.add_response(player, response)
+        socketio.emit('playerSubmittedResponse', {"player": player.to_dict(), "isFirst": is_first_response}, namespace='/host')
         if wackronyms.all_players_in():
             advance_game()
-    socketio.emit('playerSubmittedResponse', {"player": player.to_dict(), "isFirst": is_first_response}, namespace='/host')
     return jsonify({'isFirst': is_first_response})
 
 @app.route("/vote", methods=["POST"])
