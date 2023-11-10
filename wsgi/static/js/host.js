@@ -70,7 +70,7 @@ function createScoreTable() {
     scoreTable.style.width = '100%';
     scoreTable.style.border = '1px solid black';
     scoreTable.style.borderCollapse = 'collapse';
-    scoreTable.style.fontSize = '24px';
+    scoreTable.style.fontSize = '18px';
     scoreTable.style.fontWeight = 'bold';
     scoreTable.style.textAlign = 'center';
     scoreTable.style.margin = 'auto';
@@ -90,10 +90,10 @@ function createScoreTable() {
     scoreTable.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.3)';
     scoreTable.style.display = 'block';
     scoreTable.style.overflow = 'auto';
-    scoreTable.style.maxHeight = '500px';
-    scoreTable.style.maxWidth = '500px';
+    scoreTable.style.maxHeight = '1000px';
+    scoreTable.style.maxWidth = '1000px';
     scoreTable.style.minWidth = '300px';
-    scoreTable.style.minHeight = '300px';
+    scoreTable.style.minHeight = '100px';
     scoreTable.style.textOverflow = 'ellipsis';
     scoreTable.style.verticalAlign = 'middle';
     scoreTable.style.lineHeight = 'normal';
@@ -107,24 +107,29 @@ function createScoreTable() {
     var headerRow = header.insertRow(0);
     var playerHeader = headerRow.insertCell(0);
     playerHeader.innerHTML = "Player";
+    playerHeader.style.padding = '10px';
     
     var isFirstHeader = headerRow.insertCell(1);
     isFirstHeader.innerHTML = "First";
+    isFirstHeader.style.padding = '10px';
 
     var votedForWinnerHeader = headerRow.insertCell(2);
     votedForWinnerHeader.innerHTML = "Voted for Winner";
+    votedForWinnerHeader.style.padding = '10px';
 
     var numVotesHeader = headerRow.insertCell(3);
     numVotesHeader.innerHTML = "Number of Votes";
+    numVotesHeader.style.padding = '10px';
 
     var totalScoreHeader = headerRow.insertCell(4);
-    totalScoreHeader.innerHTML = "Total Score";
+    totalScoreHeader.innerHTML = "Score";
+    totalScoreHeader.style.padding = '10px';
 
     return scoreTable;
 }
 
 function insertToScoreTable(data, scoreTable) {
-    var row = scoreTable.insertRow(0);
+    var row = scoreTable.insertRow(-1);
 
     var playerCell = row.insertCell(0);
     playerCell.innerHTML = data.player.name;
@@ -132,22 +137,22 @@ function insertToScoreTable(data, scoreTable) {
     playerCell.style.fontWeight = data.isWinner ? "bold" : "normal";
 
     var isFirstCell = row.insertCell(1);
-    isFirstCell.innerHTML = data.isFirst;
+    isFirstCell.innerHTML = data.isFirstPoints;
     isFirstCell.style.color = data.player.color;
     isFirstCell.style.fontWeight = data.isWinner ? "bold" : "normal";
 
     var votedForWinnerCell = row.insertCell(2);
-    votedForWinnerCell.innerHTML = data.votedForWinner;
+    votedForWinnerCell.innerHTML = data.votedForWinnerPoints;
     votedForWinnerCell.style.color = data.player.color;
     votedForWinnerCell.style.fontWeight = data.isWinner ? "bold" : "normal";
 
     var numVotesCell = row.insertCell(3);
-    numVotesCell.innerHTML = data.numVotes;
+    numVotesCell.innerHTML = data.votes.number;
     numVotesCell.style.color = data.player.color;
     numVotesCell.style.fontWeight = data.isWinner ? "bold" : "normal";
 
     var totalScoreCell = row.insertCell(4);
-    totalScoreCell.innerHTML = data.totalScore;
+    totalScoreCell.innerHTML = data.points;
     totalScoreCell.style.color = data.player.color;
     totalScoreCell.style.fontWeight = data.isWinner ? "bold" : "normal";
 
@@ -169,24 +174,6 @@ function add_total_score_heading() {
     $("#totalScoreList").append(headingSpan);
 }
 
-function add_total_score(player, score, isWinner) {
-    var scoreDiv = document.createElement('div');
-    
-    var playerSpan = document.createElement('span');
-    playerSpan.textContent = player.name + ": ";
-    playerSpan.style.color = player.color;
-    scoreDiv.appendChild(playerSpan);
-    
-    var scoreSpan = document.createElement('span');
-    scoreSpan.textContent = score;
-    scoreSpan.style.color = player.color;
-    scoreDiv.appendChild(scoreSpan);
-    
-    scoreDiv.style.fontWeight = isWinner ? "bold" : "normal";
-    
-    $("#totalScoreList").append(scoreDiv);
-}
-
 function add_round_heading(round) {
     var roundDiv = document.createElement('div');
     
@@ -202,45 +189,10 @@ function add_round_heading(round) {
     $("#scoreList").append(roundDiv);
 }
 
-function add_round_score(player, score, isWinner) {
-    var scoreDiv = document.createElement('div');
-
-    var playerSpan = document.createElement('span');
-    playerSpan.textContent = player.name + ": ";
-    playerSpan.style.color = player.color;
-    scoreDiv.appendChild(playerSpan);
-    
-    var scoreSpan = document.createElement('span');
-    scoreSpan.textContent = score;
-    scoreSpan.style.color = player.color;
-    scoreDiv.appendChild(scoreSpan);
-    
-    scoreDiv.style.fontWeight = isWinner ? "bold" : "normal";
-    
-    $("#scoreList").append(scoreDiv);
-}
-
-function add_round_scores(single_round_responses) {
-    if (single_round_responses.length == 0) {
-        return;
-    }
-    single_round_responses.sort(function(a, b) {
-        return b.points - a.points;
-    });
-    scoreTable = createScoreTable();
-    for (let i = 0; i < single_round_responses.length; i++) {
-        var isWinner = i == 0;
-        if (i > 0) {
-            isWinner = player.score == single_round_responses[0].points;
-        }
-        single_round_responses[i].isWinner = isWinner;
-    }
-
-    // get single round responses who are winners
-    var winners = single_round_responses.filter(function(response) {
+function setVotedForWinnerPoints(single_round_responses) {
+    winners = single_round_responses.filter(function(response) {
         return response.isWinner;
     });
-
     // for each player, determine if they voted for a winner
     for (let i = 0; i < single_round_responses.length; i++) {
         const player = single_round_responses[i].player;
@@ -249,14 +201,35 @@ function add_round_scores(single_round_responses) {
                 return voter.name == player.name;
             });
         });
-        single_round_responses[i].votedForWinner = votedForWinner;
-    }
+        single_round_responses[i].votedForWinnerPoints = votedForWinner ? 2 : 0;
+    };
+    return single_round_responses;
+}
 
-    for (let i = 0; i < single_round_responses.length; i++) {
-        scoreTable = insertToScoreTable(single_round_responses[i], scoreTable)
-        add_round_score(single_round_responses[i].player, single_round_responses[i].points, isWinner);
+function add_round_scores(singleRoundResponses) {
+    if (singleRoundResponses.length == 0) {
+        return;
+    }
+    singleRoundResponses.sort(function(a, b) {
+        return b.points - a.points;
+    });
+    scoreTable = createScoreTable();
+    for (let i = 0; i < singleRoundResponses.length; i++) {
+        var isWinner = i == 0;
+        if (i > 0) {
+            isWinner = singleRoundResponses[i].votes.number == singleRoundResponses[0].votes.number;
+        }
+        singleRoundResponses[i].isWinner = isWinner;
+    }
+    
+    singleRoundResponses = setVotedForWinnerPoints(singleRoundResponses)
+
+    for (let i = 0; i < singleRoundResponses.length; i++) {
+        singleRoundResponses[i].isFirstPoints = singleRoundResponses[i].isFirst ? 1 : 0;
+        scoreTable = insertToScoreTable(singleRoundResponses[i], scoreTable);
     };
     $("#scoreList").append(scoreTable);
+    return singleRoundResponses;
 };
 
 function add_reveal_response(player, response_string, votes, isWinner) {
@@ -365,6 +338,50 @@ function splitResponsesByRound(responses) {
     return rounds;
 };
 
+function lookupPlayerResponse(playerName, responseList) {
+    for (let i = 0; i < responseList.length; i++) {
+        const response = responseList[i];
+        if (response.player.name == playerName) {
+            return response;
+        }
+    }
+    return None;
+}
+
+function aggregatePlayerData(roundPlayerData) {
+    var votesStruct = {
+        number: 0
+    };
+    var aggregatedPlayerData = {
+        player: roundPlayerData[0].player,
+        isWinner: false,
+        isFirstPoints: 0,
+        votedForWinnerPoints: 0,
+        votes: votesStruct,
+        points: 0,
+    };
+    for (let i = 0; i < roundPlayerData.length; i++) {
+        aggregatedPlayerData.isFirstPoints += roundPlayerData[i].isFirstPoints;
+        aggregatedPlayerData.votedForWinnerPoints += roundPlayerData[i].votedForWinnerPoints;
+        aggregatedPlayerData.votes.number += roundPlayerData[i].votes.number;
+        aggregatedPlayerData.points += roundPlayerData[i].points;
+    }
+    return aggregatedPlayerData;
+}
+
+function setIsWinner(aggregatedPlayerDataList) {
+    aggregatedPlayerDataList.sort(function(a, b) {
+        return b.points - a.points;
+    });
+    for (let i = 0; i < aggregatedPlayerDataList.length; i++) {
+        aggregatedPlayerDataList[i].isWinner = i == 0;
+        if (i > 0) {
+            aggregatedPlayerDataList[i].isWinner = aggregatedPlayerDataList[i].points == aggregatedPlayerDataList[0].points;
+        }
+    }
+    return aggregatedPlayerDataList;
+}
+
 function transitionToScore(data){
     cleanUpReveal();
 
@@ -375,10 +392,11 @@ function transitionToScore(data){
     rounds = splitResponsesByRound(data.responses)
     console.log("Rounds:", rounds);
     
+    scoresByRound = []
     for (let i = 0; i < rounds.length; i++) {
         const round = rounds[i];
         add_round_heading(round[0].round);
-        add_round_scores(round);
+        scoresByRound.push(add_round_scores(round)); // Create score table and memize the formatted responses
     };
     
     // Sort players by score
@@ -386,16 +404,31 @@ function transitionToScore(data){
         return b.score - a.score;
     });
 
+    // Total Score Table
     add_total_score_heading();
+    totalScoreTable = createScoreTable();
+    console.log("Player List:", data.player_list)
+    var aggregatedPlayerDataList = []
     for (let i = 0; i < data.player_list.length; i++) {
+        roundPlayerData = []
         const player = data.player_list[i];
-        const score = player.score;
-        var isWinner = i == 0;
-        if (i > 0) {
-            isWinner = player.score == data.player_list[0].score;
-        }
-        add_total_score(player, score, isWinner);
+        for (let j = 0; j < scoresByRound.length; j++) {
+            const round = scoresByRound[j];
+            var playerResponse = lookupPlayerResponse(player.name, round)
+            console.log("Player Response:", playerResponse)
+            roundPlayerData.push(playerResponse);
+        };
+        var aggregatedPlayerData = aggregatePlayerData(roundPlayerData)
+        console.log("Aggregated Player Data:", aggregatedPlayerData);
+        aggregatedPlayerDataList.push(aggregatedPlayerData);
     };
+    console.log("Aggregated Player Data List 1:", aggregatedPlayerDataList);
+    aggregatedPlayerDataList = setIsWinner(aggregatedPlayerDataList);
+    for (let i = 0; i < aggregatedPlayerDataList.length; i++) {
+        aggregatedPlayerData = aggregatedPlayerDataList[i];
+        totalScoreTable = insertToScoreTable(aggregatedPlayerData, totalScoreTable);
+    }
+    $("#totalScoreList").append(totalScoreTable);
 };
 
 // Define the function to format the player list
