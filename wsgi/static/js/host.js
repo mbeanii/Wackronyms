@@ -189,6 +189,19 @@ function add_round_heading(round) {
     $("#scoreList").append(roundDiv);
 }
 
+function setIsWinner (dataObject) {
+    dataObject.sort(function(a, b) {
+        return b.votes.number - a.votes.number;
+    });
+    for (let i = 0; i < dataObject.length; i++) {
+        dataObject[i].isWinner = i == 0;
+        if (i > 0) {
+            dataObject[i].isWinner = dataObject[i].votes.number == dataObject[0].votes.number;
+        }
+    }
+    return dataObject;
+}
+
 function setVotedForWinnerPoints(single_round_responses) {
     winners = single_round_responses.filter(function(response) {
         return response.isWinner;
@@ -206,23 +219,16 @@ function setVotedForWinnerPoints(single_round_responses) {
     return single_round_responses;
 }
 
-function add_round_scores(singleRoundResponses) {
+function addRoundScoreTable(singleRoundResponses) {
     if (singleRoundResponses.length == 0) {
         return;
     }
-    singleRoundResponses.sort(function(a, b) {
-        return b.points - a.points;
-    });
+
     scoreTable = createScoreTable();
-    for (let i = 0; i < singleRoundResponses.length; i++) {
-        var isWinner = i == 0;
-        if (i > 0) {
-            isWinner = singleRoundResponses[i].votes.number == singleRoundResponses[0].votes.number;
-        }
-        singleRoundResponses[i].isWinner = isWinner;
-    }
-    
+    singleRoundResponses = setIsWinner(singleRoundResponses);
+    console.log("Single Round Responses1:", singleRoundResponses)
     singleRoundResponses = setVotedForWinnerPoints(singleRoundResponses)
+    console.log("Single Round Responses2:", singleRoundResponses)
 
     for (let i = 0; i < singleRoundResponses.length; i++) {
         singleRoundResponses[i].isFirstPoints = singleRoundResponses[i].isFirst ? 1 : 0;
@@ -369,19 +375,6 @@ function aggregatePlayerData(roundPlayerData) {
     return aggregatedPlayerData;
 }
 
-function setIsWinner(aggregatedPlayerDataList) {
-    aggregatedPlayerDataList.sort(function(a, b) {
-        return b.points - a.points;
-    });
-    for (let i = 0; i < aggregatedPlayerDataList.length; i++) {
-        aggregatedPlayerDataList[i].isWinner = i == 0;
-        if (i > 0) {
-            aggregatedPlayerDataList[i].isWinner = aggregatedPlayerDataList[i].points == aggregatedPlayerDataList[0].points;
-        }
-    }
-    return aggregatedPlayerDataList;
-}
-
 function transitionToScore(data){
     cleanUpReveal();
 
@@ -396,7 +389,7 @@ function transitionToScore(data){
     for (let i = 0; i < rounds.length; i++) {
         const round = rounds[i];
         add_round_heading(round[0].round);
-        scoresByRound.push(add_round_scores(round)); // Create score table and memize the formatted responses
+        scoresByRound.push(addRoundScoreTable(round)); // Create score table and memize the formatted responses
     };
     
     // Sort players by score
@@ -504,17 +497,4 @@ socket.on('playerSubmittedResponse', function(data) {
     $("#submittedPlayerList").append(playerSpan);
     var playerDiv = document.createElement('div');
     $("#submittedPlayerList").append(playerDiv);
-});
-
-window.addEventListener('beforeunload', function (e) {
-    // Prompt the user with a warning message
-    e.preventDefault();
-    var confirmationMessage = 'Are you sure you want to leave?';
-    e.returnValue = confirmationMessage;
-    
-    setTimeout(function() {
-            if (confirm(confirmationMessage)) {
-                // Handle the user leaving
-            }
-    }, 0);
 });
