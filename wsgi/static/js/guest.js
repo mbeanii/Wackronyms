@@ -1,6 +1,7 @@
 var promptList = [];
 var responseText = ""
 const stageElements = {
+    "addPlayer": "addPlayerElement",
     "lobby": "lobbyElements",
     "response": "responseElements",
     "vote": "voteElements",
@@ -157,6 +158,11 @@ document.addEventListener("DOMContentLoaded", function() {
     socket.on('connect', function() {
         console.log('WebSocket connected');
     });
+
+    if (playerName) {
+        console.log('Player name submitted: ' + playerName);
+        setStageVisibility("lobby");
+    };
       
     socket.on('transition', function(data) {
         var stage = data.stage;
@@ -265,17 +271,4 @@ document.addEventListener("DOMContentLoaded", function() {
     socket.on('hide_prompts', function() {
             togglePromptAndStartGameButtons();
     });
-});
-
-window.addEventListener('beforeunload', function (e) {
-    // Prompt the user with a warning message
-    e.preventDefault();
-    var confirmationMessage = 'Are you sure you want to leave?';
-    e.returnValue = confirmationMessage;
-    
-    setTimeout(function() {
-        if (confirm(confirmationMessage)) {
-            // Actions if they confirm
-        }
-    }, 0);
 });

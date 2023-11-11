@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO
 from wackronyms import Wackronyms
+from player import Player
 from globals import MAX_PROMPTS, NUM_ROUNDS
 import logging
 
@@ -62,14 +63,14 @@ def lobby():
     if request.method == "POST":
         name = request.form.get("name").strip()
         while not name:
-            return render_template("get_name_form.html", title="Add player", error="Come on, what's your name?")
+            return render_template("guest.html", title="Add player", player=wackronyms.ghost_player, error="Come on, what's your name?")
         while name in [player.name for player in wackronyms.player_list]:
-            return render_template("get_name_form.html", title="Add player", error="Somebody already picked that one.")
+            return render_template("guest.html", title="Add player", player=wackronyms.ghost_player, error="Somebody already picked that one.")
         player = wackronyms.add_player(name)
         socketio.emit('update_list', {'player_list': wackronyms.serialize_player_list()}, namespace='/host')
         return render_template("guest.html", title="Lobby", player=player)
 
-    return render_template("get_name_form.html", title="Add player")
+    return render_template("guest.html", title="Add player", player=wackronyms.ghost_player)
 
 @app.route("/host", methods=["GET"])
 def host():

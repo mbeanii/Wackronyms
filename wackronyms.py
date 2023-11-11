@@ -36,6 +36,7 @@ class Wackronyms:
         self.letters = None
         self.responses = {}
         self.num_votes_this_round = 0
+        self.ghost_player = Player("", self.color_list[-1])
 
     def add_player(self, name) -> Player:
         player = Player(name, self.color_list[len(self.player_list)])
