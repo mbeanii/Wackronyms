@@ -6,12 +6,16 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script> 
             var playerName = "{{ player.name }}";
-            var playerColor = "{{ player.color.hex_key}}"
+            var playerColor = "{{ player.color.hex_key}}";
+            var title = "{{ title }}";
         </script>
         <script src="{{ url_for('static', filename='js/guest.js') }}"></script>
         <style>
             #addPlayerElement {
                 display: block;
+            }
+            #reconnectElement {
+                display: none;
             }
             #lobbyElements {
                 display: none;
@@ -40,7 +44,7 @@
 
         <div id="addPlayerElement">
             <h2>Add Player</h2>
-            <form action="{{ url_for("lobby")}}" method="post">
+            <form action='{{ url_for("lobby")}}' method="post">
     
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" placeholder="name">
@@ -49,6 +53,19 @@
                 <p> {{error}} </p>
             </form> 
         </div>
+
+        <div id="reconnectElement">
+            <h2>Reconnect</h2>
+            <form action='{{ url_for("reconnect")}}' method="post">
+    
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="name">
+                <button type="button" id="reconnectButton">Reconnect Player</button>
+                <br>
+                <p> {{error}} </p>
+            </form> 
+        </div>
+
         <div id="lobbyElements">
             <p>Welcome to Wackronyms,<span style="color: {{player.color.hex_key}}"> {{ player.name }}</span></p>
 

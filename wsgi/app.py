@@ -62,15 +62,39 @@ def lobby():
 
     if request.method == "POST":
         name = request.form.get("name").strip()
-        while not name:
-            return render_template("guest.html", title="Add player", player=wackronyms.ghost_player, error="Come on, what's your name?")
-        while name in [player.name for player in wackronyms.player_list]:
-            return render_template("guest.html", title="Add player", player=wackronyms.ghost_player, error="Somebody already picked that one.")
-        player = wackronyms.add_player(name)
-        socketio.emit('update_list', {'player_list': wackronyms.serialize_player_list()}, namespace='/host')
+        if (wackronyms.current_stage == "lobby"):
+            while not name:
+                return render_template("guest.html", title="Add player", player=wackronyms.ghost_player, error="Come on, what's your name?")
+            while name in [player.name for player in wackronyms.player_list]:
+                return render_template("guest.html", title="Add player", player=wackronyms.ghost_player, error="Somebody already picked that one.")
+            player = wackronyms.add_player(name)
+            socketio.emit('update_list', {'player_list': wackronyms.serialize_player_list()}, namespace='/host')
+            return render_template("guest.html", title="Lobby", player=player)
+        else:
+            while not name:
+                return render_template("guest.html", title="Reconnect", player=wackronyms.ghost_player, error="Which player is trying to rejoin?")
+            player = wackronyms.get_player(name)
+            if player:
+                return render_template("guest.html", title="Lobby", player=player)
+            else:
+                return render_template("guest.html", title="Reconnect", player=wackronyms.ghost_player, error="Sorry, we couldn't find you. Try again?")
+    elif request.method == "GET":
+        if (wackronyms.current_stage == "lobby"):
+            return render_template("guest.html", title="Add player", player=wackronyms.ghost_player)
+        else:
+            return render_template("guest.html", title="Reconnect", player=wackronyms.ghost_player)
+    else:
+        return "Method not allowed"
+    
+@app.route("/reconnect", methods=["POST"])
+def reconnect():
+    global wackronyms
+    name = request.form.get("name").strip()
+    player = wackronyms.get_player(name)
+    if player:
         return render_template("guest.html", title="Lobby", player=player)
-
-    return render_template("guest.html", title="Add player", player=wackronyms.ghost_player)
+    else:
+        return render_template("guest.html", title="Reconnect", player=wackronyms.ghost_player, error="Sorry, we couldn't find you. Try again?")
 
 @app.route("/host", methods=["GET"])
 def host():
@@ -164,6 +188,14 @@ def vote():
 def finish_game():
     socketio.emit('finishGame', {}, namespace='/player')
     return jsonify({'game_ended': True})
+
+@app.route("/currentStage", methods=["GET"])
+def game_has_started():
+    global wackronyms
+    data = {
+        "currentStage": wackronyms.current_stage
+    }
+    return jsonify(data)
 
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", debug=True)

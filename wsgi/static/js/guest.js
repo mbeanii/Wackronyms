@@ -159,6 +159,17 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log('WebSocket connected');
     });
 
+    if (title == "Reconnect") {
+        hideAllElements();
+        $("#reconnectElement").show();
+    }
+
+    $.get("currentStage").done(function(data) {
+        if (data.currentStage != "lobby") {
+            setStageVisibility(data.currentStage);
+        }
+    });
+
     if (playerName) {
         console.log('Player name submitted: ' + playerName);
         setStageVisibility("lobby");
